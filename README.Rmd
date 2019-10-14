@@ -2,7 +2,6 @@
 title: "Replicating Ledoit and Wolf (2008, 2011) Functions" 
 date: '`r format(Sys.time(), "%d, %B, %Y")`'
 author: "Paulo Ferreira Naibert" 
-#(paulo dot naibert at gmail dot com)
 output: 
   html_document:
     toc: false
@@ -196,18 +195,6 @@ The output of the `all.equal()` function is `TRUE` which indicates that all quan
 
 
 # System Information
-
-## Hardware Information
-
-tirar esta parte
-
-```{bash}
-lscpu
-```
-
-```{bash}
-cat(MYfuns.R)
-```
 
 ## Software Information
 ```{r}
