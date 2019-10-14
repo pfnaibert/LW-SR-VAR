@@ -276,7 +276,7 @@ cbb.seq <- function (T, b)
 
 l      <- floor(T/b)                        # number of blocks
 id.seq <- c(1:T, 1:b)                       # wrap the data around a circle
-seq1   <- rep(NA, T)
+seq1   <- rep(0, T)
 start.points <- sample(1:T, l, replace = T) # index where the block starts
 
 for(j in (1:l))
@@ -289,7 +289,6 @@ return(seq1)
 }
 
 #####################################
-# sb.seq (MEU)
 sb.seq <- function(T, b.av) 
 {
 # Stationary bootstrap # Boot data is made of l block with average size b
