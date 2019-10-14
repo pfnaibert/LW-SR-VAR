@@ -1,5 +1,5 @@
 --- 
-title: "Replicating Ledoit and Wolf (2008, 2011) Functions" 
+title: Replicating Ledoit and Wolf (2008, 2011) Functions
 author: "Paulo Ferreira Naibert" 
 output: 
   html_document:
@@ -172,10 +172,10 @@ Then, we evaluate the difference in the Sharpe Ratio, again using the `all.equal
 
 ## Sharpe Ratio
 ```{r}
-# tmp1 <- boot.inf.sr(ret$hedge, est="sr", b=5, M=499)
-# tmp2 <- boot.time.inference(ret$hedge, b=5, M=499)
-# 
-# tmp1; tmp2; all.equal(tmp1, tmp2, check.names=FALSE)
+tmp1 <- boot.inf.sr(ret$hedge, est="sr", b=5, M=499)
+tmp2 <- boot.time.inference(ret$hedge, b=5, M=499)
+
+tmp1; tmp2; all.equal(tmp1, tmp2, check.names=FALSE)
 ```
 
 We can note that we have a difference in the p-values of the Sharpe Ratios.
@@ -186,10 +186,10 @@ This might be due to the small sample correction $T/(T-4)$ on the `Psi.Star` qua
 Finally, we check the output of the function that performs boostrap inference in the variance.
 
 ```{r}
-# tmp1 <- boot.inf.var(ret$hedge, est="var", b=5, M=499)
-# tmp2 <- boot.time.inference.log.var(ret$hedge, b=5, M=499)
-# 
-# tmp1; tmp2; all.equal(tmp1, tmp2, check.names=FALSE)
+tmp1 <- boot.inf.var(ret$hedge, est="var", b=5, M=499)
+tmp2 <- boot.time.inference.log.var(ret$hedge, b=5, M=499)
+
+tmp1; tmp2; all.equal(tmp1, tmp2, check.names=FALSE)
 ```
 
 The output of the `all.equal()` function is `TRUE` which indicates that all quantities are equal.

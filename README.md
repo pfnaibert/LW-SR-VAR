@@ -286,11 +286,25 @@ Sharpe Ratio
 ------------
 
 ``` r
-# tmp1 <- boot.inf.sr(ret$hedge, est="sr", b=5, M=499)
-# tmp2 <- boot.time.inference(ret$hedge, b=5, M=499)
-# 
-# tmp1; tmp2; all.equal(tmp1, tmp2, check.names=FALSE)
+tmp1 <- boot.inf.sr(ret$hedge, est="sr", b=5, M=499)
+tmp2 <- boot.time.inference(ret$hedge, b=5, M=499)
+
+tmp1; tmp2; all.equal(tmp1, tmp2, check.names=FALSE)
 ```
+
+    ## $Diff
+    ## [1] -0.4463
+    ## 
+    ## $pVal
+    ## [1] 0.298
+
+    ## $Difference
+    ## [1] -0.4463
+    ## 
+    ## $p.Value
+    ## [1] 0.25
+
+    ## [1] "Component 2: Mean relative difference: 0.1610738"
 
 We can note that we have a difference in the p-values of the Sharpe Ratios. This might be due to the small sample correction \(T/(T-4)\) on the `Psi.Star` quantity that I introduced in my code, but not on LW's.
 
@@ -300,11 +314,25 @@ Variance
 Finally, we check the output of the function that performs boostrap inference in the variance.
 
 ``` r
-# tmp1 <- boot.inf.var(ret$hedge, est="var", b=5, M=499)
-# tmp2 <- boot.time.inference.log.var(ret$hedge, b=5, M=499)
-# 
-# tmp1; tmp2; all.equal(tmp1, tmp2, check.names=FALSE)
+tmp1 <- boot.inf.var(ret$hedge, est="var", b=5, M=499)
+tmp2 <- boot.time.inference.log.var(ret$hedge, b=5, M=499)
+
+tmp1; tmp2; all.equal(tmp1, tmp2, check.names=FALSE)
 ```
+
+    ## $Difference
+    ## [1] 3.955
+    ## 
+    ## $p.Value
+    ## [1] 0.002
+
+    ## $Difference
+    ## [1] 3.955
+    ## 
+    ## $p.Value
+    ## [1] 0.002
+
+    ## [1] TRUE
 
 The output of the `all.equal()` function is `TRUE` which indicates that all quantities are equal.
 
