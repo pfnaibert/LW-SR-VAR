@@ -158,7 +158,7 @@ The reasons for doing so is twofold:
 
 Then, we evaluate the difference in the Sharpe Ratio, again using the `all.equal()` function.
 
-## Sharpe Ratio
+## Sharpe Ratio Boot
 ```{r}
 set.seed(1)
 t0 <- Sys.time()
@@ -180,10 +180,10 @@ all.equal(tmp1["Difference"], tmp2["Diff"], check.names=FALSE)
 all.equal(tmp1["p.Value"], tmp2["p.value"], check.names=FALSE)
 ```
 
-The output of the test indicates difference in the `Difference` argument only on the 4th decimal place.
+The output of the test indicates difference in the `Difference` argument only on the 5th decimal place.
 The `p.value` is equal.
 
-## Variance
+## Variance Boot
 
 Finally, we check the output of the function that performs boostrap inference in the variance.
 
