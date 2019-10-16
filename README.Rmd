@@ -41,6 +41,12 @@ I didn't have enought time to modify the `bloc.size.calibrate()` functions.
 For the data, I simpy saved the returns data of `Sharpe.RData` as a `.RDS` file.
 Loading `rets.RDS` should result in a list object on the `R` Software [@R] .
 
+# TODO
+- Document Functions (.tex?)
+- Add technincal notes
+- Add Mean test
+- Add E-V utility test [@wec93, @fko2012]
+
 # DISCLAIMER
 
 I own NONE of the rights to the codes.
