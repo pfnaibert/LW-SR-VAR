@@ -17,11 +17,6 @@ tab <- cbind(mus, sds, srs); rownames(tab) <- c("hedge1", "hedge2", "diff.hedge"
 kable(tab, digits=3)
 
 #######################################
-# classical testing
-t.test(d.h)
-t.test(d.m)
-
-#######################################
 # PLOTS
 
 par(mfrow=c(3,1))
@@ -33,23 +28,6 @@ par(mfrow=c(3,1))
 plot(density(ret$mutual[,1]), main="Density Plot of mutual1")
 plot(density(ret$mutual[,2]), main="Density Plot of mutual2")
 plot(density(d.m), main="Density Plot of Ret Diff of Mutuals")
-
-
-#######################################
-source("./R/mean-testing.R")
-source("./R/LW-SR-VAR.R")
-
-
-#######################################
-# MEAN TEST
-
-
-# classical testing
-mu.diff(ret$hedge)
-
-
-
-mu.hac.test(ret$hedge)
 
 #######################################
 cat(" \n ***** END OF SCRIPT ****** \n")
