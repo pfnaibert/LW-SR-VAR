@@ -1,0 +1,305 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \documentclass[11pt,oneside,a4paper, draft]{article}
+\documentclass[12pt,oneside,a4paper]{article}
+% \documentclass[11pt,oneside,a4paper]{letter}
+\usepackage[a4paper, margin=1in]{geometry}   % MARGENS
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pacotes básicos 
+% \usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[0T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage[english]{babel}
+% \selectlanguage{english}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pacotes de citações
+% BIBLIOGRAPHYSTYLE (BST) DIFERENTE LA EM BAIXO
+% \usepackage[alf]{abntex2cite}	% Citações padrão ABNT 
+\usepackage{natbib}	% Citações}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \usepackage{lastpage}			% Usado pela Ficha catalográfica
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{microtype} 			% para melhorias de justificação
+\usepackage{mathtools, amsmath, amssymb, amsthm, latexsym}
+\usepackage{lscape}				% Gira a página em 90 graus
+%\usepackage{listings}			% Formatação para inserir códigos
+\usepackage[normalem]{ulem}
+\usepackage[all]{xy}
+\usepackage{xcolor}
+\usepackage{ragged2e}           % formatação texto
+\usepackage{bm}                 % bold symbols 
+\usepackage[colorlinks, citecolor=blue,urlcolor=blue]{hyperref} % referencias dentro do texo (*QUEBRA MEMOIR*)
+\usepackage{url}                % URL
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{subcaption}			% Faz subfiguras
+\usepackage{textcase}			% MakeTextUppercase
+%\usepackage{subfigure}         % subfigures
+% \usepackage{setspace}         % Espaçamento
+\usepackage{pdfpages}           % inclui páginas de pdfs (*FICHA CATALOGRAFICA*)
+\usepackage[flushleft]{threeparttable} % notas nas tabelas
+\usepackage{enumitem}
+% \usepackage{titlesec}
+\usepackage{titling}          % personalized other things
+\usepackage{fancyhdr}         % personalized page style
+\usepackage{lipsum}           % dummy text
+% \usepackage[displaymath, pagewise]{lineno}           % show line numbers
+\usepackage[]{lineno}           % show line numbers
+% \linenumbers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{macros.tex}
+% \pagestyle{headings}
+\pagestyle{fancy}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Begin
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% METADATA
+\title{Notes on Mean Testing}
+\author{Paulo F. Naibert}
+\date{\today}
+% \thanks{} \\ 
+%email\mailto{sth sthe}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TITLE PAGE
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{headings}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MEAN TESTING
+\section{Mean Testing}
+Based on \cite{lw2008-sr, lw2011-var}
+
+$T$ pairs: $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$.
+
+% pairs as matrix
+% $T \times 2$ matrix:
+% \begin{align*}
+% \begin{bmatrix}
+% r_{1i} &  r_{1n} \\ \vdots \\ r_{Ti} & r_{Tn}
+% \end{bmatrix}
+% \end{align*}
+
+Bivariate return distribution:
+\begin{align*}
+\mu=
+\begin{bmatrix}
+\mu_{i} \\ \mu_{n}
+\end{bmatrix}
+\quad
+\Sigma=
+\begin{bmatrix}
+\sigma_{i}^2 & \sigma_{ni}
+\\
+\sigma_{in} & \sigma_{n}^2
+\end{bmatrix}.
+\end{align*}
+
+% sample counterparts
+Any quantity $x$ when denoted as $\hat{x}$ simply means its sample counterpart, e.g. $\hat{\mu}$ denotes the sample counterpart of $\mu$.
+
+% Differences
+Define the difference of returns as $r_{td} = r_{ti} - r_{tn}$ with moments:
+\begin{align*}
+E(r_{td}) &= \mu_{d} = \mu_{i} - \mu_{n} 
+	\\
+V(r_{dt})&= E[(r_{ti} - r_{tn})^2] - [E(r_{ti} - r_{tn})]^2
+\\
+V(r_{dt})&= E(r^2_{ti}) + E(r^2_{tn}) - 2E(r_{ti}r_{tn}) - \mu_{i}^2 + \mu_{n}^2 - 2\mu_{i}\mu_{n}
+\\
+V(r_{dt}) &= V(r_{ti}) + V(r_{tn}) - 2Cov(r_{ti},r_{tn}) 
+\\
+\sigma^2_{d} &= \sigma^2_{i} + \sigma^2_{n} - 2\sigma_{in}
+\end{align*}
+
+% Classical Test
+What we want to test is if the difference in means is different from zero statistically significant.
+\begin{align*}
+	H_{0}: \, \hat{\mu}_{d} = 0
+	\text{ vs. }
+	H_{1}: \, \hat{\mu}_{d} \neq 0.
+\end{align*}
+
+\textbf{The classical $T$-test:}
+
+Define the test statistic as:
+\begin{align}
+\Theta &= T^{1/2} \frac{\hat{\mu}_{d}}{\hat{\sigma}_{d}} = 
+ T^{1/2} \frac{\hat{\mu}_{i} - \hat{\mu}_{n}}{\hat{\sigma}^2_{i} + \hat{\sigma}^2_{n} - 2\hat{\sigma}_{in}}.
+\end{align}
+Further, let's define $t_{\lambda}(k)$ as the $\lambda$-quantile of $t(k)$, or the $t$ distribution with $k$ degrees of freedom.
+The test rejects $H_{0}$ at a significance level $\alpha$ iff:
+\begin{align*}
+	|\Theta| > t_{1-\alpha/2}(T-1).
+\end{align*}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REFORMULATION
+\clearpage
+\section{Reformulation}
+
+What we are going to test is whether the difference in mean, $\Delta$, is zero or not.
+In other terms:
+\begin{align*}
+	H_{0}: \Delta=0 \text{ vs. } H_{1}: \Delta \neq 0.
+\end{align*}
+
+Define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n})'$:
+\begin{align*}
+\Delta = f(v) = \mu_{i} - \mu_{n}.
+\end{align*}
+
+The gradient of the function $f(v)$ is:
+\begin{align}
+\nabla' f(v) =
+\left( 
+\pdf{f(v)}{\mu_{i}},
+\pdf{f(v)}{\mu_{n}}
+\right) = \left( 1, -1 \right).
+\end{align}
+
+Now, assume that:
+\begin{align}
+	T^{1/2}(v - \hat{v}) \to^d N(0, \Psi),
+\end{align}
+where $\Psi$ is an unknown symmetric PSD matrix.
+
+If we apply a function on the vector $v$ of parameters, the Taylor expansion (Delta method) implies:
+\begin{align*}
+	T^{1/2}[f(v) - f(\hat{v})] \to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\end{align*}
+
+Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(v) = \Delta$, so we have:
+\begin{align*}
+T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\end{align*}
+
+Now, if a consistent estimator $\hat{\Psi}$ of $\Psi$ is available, then $se(\hat{\Delta})$ is given by:
+\begin{align}
+	se(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
+\end{align}
+
+% 
+\begin{align*}
+\nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})&=
+\begin{bmatrix} 1 & -1 \end{bmatrix}
+\begin{bmatrix}
+\hat{\psi}_{11} &  \hat{\psi}_{12}
+\\            
+\hat{\psi}_{21} &  \hat{\psi}_{22}
+\end{bmatrix}
+\begin{bmatrix} 1 \\  -1 \end{bmatrix}
+\\
+&= \hat{\psi}_{11} + \hat{\psi}_{22} -2\hat{\psi}_{12}
+\end{align*}
+
+If we use $\hat{\Psi}$ as the sample covariance matrix:
+\begin{align*}
+\nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})= \hat{\sigma}_{1}^2 + \hat{\sigma}_{22}^{2} -2\hat{\sigma}_{12}.
+\end{align*}
+And we have the same case as the classical $t$-test.
+So we use HAC consistend methods to estimate $\hat{\Psi}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LOG REFORMULATION
+\clearpage
+\section{Log Reformulation}
+
+Reformulating the problem with a log transformation: 
+\begin{align}
+\Delta = \log(\Theta) =
+\log(1+\mu_{i}) - \log(1+\mu_{n})  =
+\log[(1+\mu_{i})/(1+\mu_{n})].
+\end{align}
+
+\noindent
+{\footnotesize
+\textbf{OBS:} Log transformation, see Efron and Tibshirani 1993, sec 12.6.}
+\vspace{1 em}
+
+What we are going to test is whether the difference in log variances, $\Delta$, is zero or not.
+In other terms:
+\begin{align*}
+	H_{0}: \Delta=0 \text{ vs. } H_{1}: \Delta \neq 0.
+\end{align*}
+
+Define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n})'$:
+\begin{align*}
+\Delta &= f(v) =
+\log{(1+\mu_{i})} - \log{(1+\mu_{n})} =
+\log\left( {\frac{1+\mu_{i}}{1+\mu_{n}}} \right).
+\end{align*}
+
+The gradient of the function $f(v)$ is:
+% gradient
+\begin{align}
+\nabla' f(v) &=
+\left( 
+\pdf{f(v)}{\mu_{i}},
+\pdf{f(v)}{\mu_{n}}
+\right) =
+\left( 
+\frac{1}{1+ \mu_{i}},
+\frac{-1}{1+ \mu_{n}}
+\right).
+\end{align}
+
+Now, assume that:
+\begin{align}
+	T^{1/2}(v - \hat{v}) \to^d N(0, \Psi),
+\end{align}
+where $\Psi$ is an unknown symmetric PSD matrix.
+
+If we apply a function on the vector $v$ of parameters, the Taylor expansion (Delta method) implies:
+\begin{align*}
+	T^{1/2}[f(v) - f(\hat{v})] \to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\end{align*}
+
+Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(v) = \Delta$, so we have:
+\begin{align*}
+T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\end{align*}
+
+Now, if a consistent estimator $\hat{\Psi}$ of $\Psi$ is available, then $se(\hat{\Delta})$ is given by:
+\begin{align}
+	se(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
+\end{align}
+
+% 
+\begin{align*}
+\nabla'f(v) \Psi \nabla f(v)=
+\begin{bmatrix} \frac{1}{1+ \mu_{i}} & \frac{-1}{1+ \mu_{n}} \end{bmatrix}
+\begin{bmatrix}
+\psi_{11} &  \psi_{12}
+\\
+\psi_{21} &  \psi_{22}
+\end{bmatrix}
+\begin{bmatrix} \frac{1}{1+ \mu_{i}} \\ \frac{-1}{1+ \mu_{n}} \end{bmatrix}
+\end{align*}
+
+\begin{align*}
+\nabla'f(v) \Psi \nabla f(v)=
+	\frac{\psi_{11}}{(1+\mu_{i})^2} +
+	\frac{\psi_{22}}{(1+\mu_{n})^2} -
+	\frac{2\psi_{21}}{(1+\mu_{i})(1+\mu_{n})} 
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Bibliografia
+\clearpage
+\bibliographystyle{authordate3} % bibliography style
+\renewcommand\bibname{REFERENCES} 
+\bibliography{../refs.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

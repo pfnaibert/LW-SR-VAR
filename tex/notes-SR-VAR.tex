@@ -1,0 +1,375 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \documentclass[11pt,oneside,a4paper, draft]{article}
+\documentclass[12pt,oneside,a4paper]{article}
+% \documentclass[11pt,oneside,a4paper]{letter}
+\usepackage[a4paper, margin=1in]{geometry}   % MARGENS
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pacotes básicos 
+% \usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[0T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage[english]{babel}
+% \selectlanguage{english}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pacotes de citações
+% BIBLIOGRAPHYSTYLE (BST) DIFERENTE LA EM BAIXO
+% \usepackage[alf]{abntex2cite}	% Citações padrão ABNT 
+\usepackage{natbib}	% Citações}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \usepackage{lastpage}			% Usado pela Ficha catalográfica
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{microtype} 			% para melhorias de justificação
+\usepackage{mathtools, amsmath, amssymb, amsthm, latexsym}
+\usepackage{lscape}				% Gira a página em 90 graus
+%\usepackage{listings}			% Formatação para inserir códigos
+\usepackage[normalem]{ulem}
+\usepackage[all]{xy}
+\usepackage{xcolor}
+\usepackage{ragged2e}           % formatação texto
+\usepackage{bm}                 % bold symbols 
+\usepackage[colorlinks, citecolor=blue,urlcolor=blue]{hyperref} % referencias dentro do texo (*QUEBRA MEMOIR*)
+\usepackage{url}                % URL
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{subcaption}			% Faz subfiguras
+\usepackage{textcase}			% MakeTextUppercase
+%\usepackage{subfigure}         % subfigures
+% \usepackage{setspace}         % Espaçamento
+\usepackage{pdfpages}           % inclui páginas de pdfs (*FICHA CATALOGRAFICA*)
+\usepackage[flushleft]{threeparttable} % notas nas tabelas
+\usepackage{enumitem}
+% \usepackage{titlesec}
+\usepackage{titling}          % personalized other things
+\usepackage{fancyhdr}         % personalized page style
+\usepackage{lipsum}           % dummy text
+% \usepackage[displaymath, pagewise]{lineno}           % show line numbers
+\usepackage[]{lineno}           % show line numbers
+% \linenumbers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{macros.tex}
+% \pagestyle{headings}
+\pagestyle{fancy}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Begin
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% METADATA
+\title{Notes on Ledoit and Wolf (2008, 2011)}
+\author{Paulo F. Naibert}
+\date{\today}
+% \thanks{} \\ 
+%email\mailto{sth sthe}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TITLE PAGE
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{headings}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TEXT
+\section{Sharpe Testing}
+\cite{lw2008-sr}
+
+$T$ pairs: $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$.
+
+% pairs as matrix
+% $T \times 2$ matrix:
+% 
+% \begin{align}
+% \begin{bmatrix}
+% r_{1i} &  r_{1n} \\ \vdots \\ r_{Ti} & r_{Tn}
+% \end{bmatrix}
+% \end{align}
+
+% NORMAL BIVARIATE
+Bivariate return distribution:
+\begin{align*}
+\mu=
+\begin{bmatrix}
+\mu_{i} \\ \mu_{n}
+\end{bmatrix}
+\quad
+\Sigma=
+\begin{bmatrix}
+\sigma_{i}^2 & \sigma_{ni}
+\\
+\sigma_{in} & \sigma_{n}^2
+\end{bmatrix}.
+\end{align*}
+
+% sample counterparts
+Any quantity $x$ when denoted as $\hat{x}$ simply means its sample counterpart, e.g. $\hat{\mu}$ denotes the sample counterpart of $\mu$.
+
+% Classical testing
+Define the difference in Sharpe Ratios as:
+\begin{align}
+	\Delta = SR_{i} - SR_{n} = \frac{\mu_{i}}{\sigma_{i}} - \frac{\mu_{n}}{\sigma_{n}},
+\end{align}
+further, define $\Delta$ as a function of $u = (\mu_{i}, \mu_{n}, \sigma^2_{i}, \sigma^2_{n})'$.
+So,
+% delta as a fun of u
+\begin{align}
+\Delta = f(u) &= SR_{i} - SR_{n} 
+= \frac{\mu_{i}}{\sqrt{\sigma^2_{i}}} - \frac{\mu_{n}}{\sqrt{\sigma^2_{n}}}.
+\end{align}
+
+The gradient of $f(u)$ is:
+% gradient of f(u)
+\begin{align*}
+\nabla' f(u) &=
+\left( 
+\pdf{f(u)}{\mu_{i}},
+\pdf{f(u)}{\mu_{n}},
+\pdf{f(u)}{\sigma_{i}},
+\pdf{f(u)}{\sigma_{n}}
+\right)
+% \\ &=
+% \left( 
+% \frac{ \gamma_{i}}{(\gamma_{i} - \mu_{i}^2)^{3/2}},
+% \frac{-\gamma_{n}}{(\gamma_{n} - \mu_{n}^2)^{3/2}}, 
+% \frac{-\mu_{i}}{2(\gamma_{i} - \mu_{i}^2)^{3/2}},  
+% \frac{ \mu_{n}}{2(\gamma_{n} - \mu_{n}^2)^{3/2}}
+% \right) .
+\end{align*}
+
+% 
+Assume that:
+\begin{align*}
+	T^{1/2}(u - \hat{u}) \to^d N(0, \Omega),
+\end{align*}
+where $\Omega$ is an unknown symmetric PSD matrix.
+
+If we apply a function on the vector $u$ of parameters, the Taylor expansion (Delta method) implies:
+\begin{align*}
+T^{1/2}[f(u) - f(\hat{u})] \to^d N \left( 0; \nabla'f(u) \Omega \nabla f(u)  \right).
+\end{align*}
+
+Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(u) = \Delta$, so we have:
+\begin{align*}
+T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(u) \Omega \nabla f(u)  \right).
+\end{align*}
+
+Now, if a consistent estimator $\hat{\Omega}$ of $\Omega$ is available, then $se(\hat{\Delta})$ is given by:
+% se(delta.hat)
+\begin{align}
+se(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{u}) \hat{\Omega} \nabla f(\hat{u})}.
+\end{align}
+
+The problem is that \cite{jb81-sr} uses a formula for $\Omega$ that crucially relies on $iid$ return data for a bivariate normal distribution:
+\begin{align*}
+\Omega = 
+\begin{bmatrix}
+\sigma_{i} & \sigma_{n} & 0 & 0 \\
+\sigma_{i} & \sigma_{n} & 0 & 0 \\
+0 & 0 & 2\sigma^{4}_{i} & 2\sigma^{4}_{n}  \\
+0 & 0 & 2\sigma^{4}_{i} & 2\sigma^{4}_{n}  \\
+\end{bmatrix}
+\end{align*}
+
+Further information can be found in: \cite{lo02-sr, jb81-sr}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ledoit SR
+\subsection{Ledoit and Wolf (2008)}
+
+Define the uncentered second moments as:
+\begin{align*}
+	\gamma_{i} = E(r_{it}^{2}), \; \gamma_{n} = E(r_{nt}^{2}),
+\end{align*}
+and define the vector 
+\begin{align*}
+v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'.
+\end{align*}
+
+Then, we define $\Delta$ as a function of $v$:
+\begin{align}
+\Delta = f(v) &= SR_{i} - SR_{n} = 
+\frac{\mu_{i}}{\sqrt{\sigma^2_{i}}} - \frac{\mu_{n}}{\sqrt{\sigma^2_{n}}}.
+\end{align}
+
+The gradient of $f(v)$ is:
+\begin{align*}
+\nabla' f(v) &=
+\left( 
+\pdf{f(v)}{\mu_{i}},
+\pdf{f(v)}{\mu_{n}},
+\pdf{f(v)}{\gamma_{i}},
+\pdf{f(v)}{\gamma_{n}}
+\right)
+\\ &=
+\left( 
+\frac{ \gamma_{i}}{(\gamma_{i} - \mu_{i}^2)^{3/2}},
+\frac{-\gamma_{n}}{(\gamma_{n} - \mu_{n}^2)^{3/2}}, 
+\frac{-\mu_{i}}{2(\gamma_{i} - \mu_{i}^2)^{3/2}},  
+\frac{ \mu_{n}}{2(\gamma_{n} - \mu_{n}^2)^{3/2}}
+\right).
+\end{align*}
+
+Assume that:
+\begin{align*}
+T^{1/2}(v - \hat{v}) \to^d N(0, \Psi),
+\end{align*}
+where $\Psi$ is an unknown symmetric PSD matrix.
+
+If we apply a function on the vector $v$ of parameters, the Taylor expansion (Delta method) implies:
+\begin{align*}
+T^{1/2}[f(v) - f(\hat{v})] \to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\end{align*}
+
+Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(v) = \Delta$, so we have:
+\begin{align*}
+T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\end{align*}
+
+Now, if a consistent estimator $\hat{\Psi}$ of $\Psi$ is available, then $se(\hat{\Delta})$ is given by:
+\begin{align*}
+se(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% VARIANCE TESTING
+\clearpage \section{Variance Testing}
+\cite{lw2011-var}
+
+$T$ pairs: $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$.
+
+% pairs as matrix
+% $T \times 2$ matrix:
+% \begin{align*}
+% \begin{bmatrix}
+% r_{1i} &  r_{1n} \\ \vdots \\ r_{Ti} & r_{Tn}
+% \end{bmatrix}
+% \end{align*}
+
+Bivariate return distribution:
+\begin{align*}
+\mu=
+\begin{bmatrix}
+\mu_{i} \\ \mu_{n}
+\end{bmatrix}
+\quad
+\Sigma=
+\begin{bmatrix}
+\sigma_{i}^2 & \sigma_{ni}
+\\
+\sigma_{in} & \sigma_{n}^2
+\end{bmatrix}.
+\end{align*}
+
+% sample counterparts
+Any quantity $x$ when denoted as $\hat{x}$ simply means its sample counterpart, e.g. $\hat{\mu}$ denotes the sample counterpart of $\mu$.
+
+% Classical Test
+Define the reason of variances as:
+\begin{align}
+	\Theta=\sigma^2_{i}/\sigma^2_{n}.
+\end{align}
+What we want to test is if the reason of variances is different from one statistically significant.
+\begin{align*}
+	H_{0}: \,\Theta = 1
+	\text{ vs. }
+	H_{1}: \,\Theta \neq 1.
+\end{align*}
+
+\textbf{The classical $F$-test:}
+
+Defining the test statistic as $F=\hat{\sigma}^2_{i}/\hat{\sigma}^2_{n}$.
+$F_{\lambda, k_{1}, k_{2}}$ is the $\lambda$-quantile of $F_{k1, k2}$, or the $F$ distribution with $k_{1}$ and $k_{2}$ degrees of freedom.
+The $F$-test rejects $H_{0}$ at a significance level $\alpha$ iff:
+\begin{align*}
+	F < F_{\alpha/2, T-1, T-1} 
+	\text{ or, }
+	F > F_{1-\alpha/2, T-1, T-1}.
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LW var
+\subsection{Ledoit and Wolf (2011)}
+
+First, we reformulate the problem with a log transformation: 
+\begin{align}
+\Delta = \log(\Theta) =
+\log(\sigma_{i}^{2}) - \log(\sigma_{n}^{2})  =
+\log(\sigma_{i}^{2}/\sigma_{n}^{2}).
+\end{align}
+
+\noindent
+{\footnotesize
+\textbf{OBS:} Log transformation, see Efron and Tibshirani 1993, sec 12.6.}
+\vspace{1 em}
+
+What we are going to test is whether the difference in log variances, $\Delta$, is zero or not.
+In other terms:
+\begin{align*}
+	H_{0}: \Delta=0 \text{ vs. } H_{1}: \Delta \neq 0.
+\end{align*}
+
+Define the Uncentered Second Moments as:
+\begin{align*}
+	\gamma_{i} = E(r_{it}^{2}), \; \gamma_{n} = E(r_{nt}^{2}),
+\end{align*}
+Then, we define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$:
+\begin{align*}
+\Delta &= f(v),
+\\
+f(v) &=
+\log{(\gamma_{i} - \mu^2_{i})} - \log{(\gamma_{n} - \mu^2_{n})} \\ &=
+\log\left( {\frac{\gamma_{i} - \mu^2_{i}}{\gamma_{n} - \mu^2_{n}}} \right).
+\end{align*}
+
+The gradient of the function $f(v)$ is:
+\begin{align}
+\nabla' f(v) &=
+\left( 
+\pdf{f(v)}{\mu_{i}},
+\pdf{f(v)}{\mu_{n}},
+\pdf{f(v)}{\gamma_{i}},
+\pdf{f(v)}{\gamma_{n}}
+\right)
+\\ &=
+\left( 
+\frac{-2 \mu_{i}}{\gamma_{i} - \mu_{i}^2},
+\frac{2 \mu_{n}}{\gamma_{n} - \mu_{n}^2},
+\frac{1}{\gamma_{i} - \mu_{i}^2},  
+\frac{1}{\gamma_{n} - \mu_{n}^2}
+\right).
+\end{align}
+
+Now, assume that:
+\begin{align}
+	T^{1/2}(v - \hat{v}) \to^d N(0, \Psi),
+\end{align}
+where $\Psi$ is an unknown symmetric PSD matrix.
+
+If we apply a function on the vector $v$ of parameters, the Taylor expansion (Delta method) implies:
+\begin{align*}
+	T^{1/2}[f(v) - f(\hat{v})] \to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\end{align*}
+
+Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(v) = \Delta$, so we have:
+\begin{align*}
+T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\end{align*}
+
+Now, if a consistent estimator $\hat{\Psi}$ of $\Psi$ is available, then $se(\hat{\Delta})$ is given by:
+\begin{align}
+	se(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Bibliografia
+\clearpage
+\bibliographystyle{authordate3} % bibliography style
+\renewcommand\bibname{REFERENCES} 
+\bibliography{../refs.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
