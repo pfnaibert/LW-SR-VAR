@@ -235,11 +235,18 @@ setdiff(lv, sr)</code></pre>
 <pre class="r"><code># Funs in &quot;./R/LW-SR.Var.R&quot;
 source(&quot;./R/LW-SR-VAR.R&quot;); my &lt;- setdiff(ls(), c(&quot;sr&quot;,&quot;lv&quot;) )
 my</code></pre>
-<pre><code>##  [1] &quot;alpha.hat.fn&quot;  &quot;cbb.seq&quot;       &quot;Gamma.hat.fn&quot;  &quot;kernel.Parzen&quot;
-##  [5] &quot;lv.diff&quot;       &quot;prewhite.fn&quot;   &quot;Psi.hat.fn&quot;    &quot;sb.seq&quot;       
-##  [9] &quot;se.Parzen&quot;     &quot;se.Parzen.pw&quot;  &quot;sr.boot.test&quot;  &quot;sr.diff&quot;      
-## [13] &quot;sr.hac.test&quot;   &quot;sr.util&quot;       &quot;var.boot.test&quot; &quot;var.hac.test&quot; 
-## [17] &quot;var.util&quot;</code></pre>
+<pre><code>##  [1] &quot;alpha.hat.fn&quot;            &quot;boot.inference.original&quot;
+##  [3] &quot;cbb.seq&quot;                 &quot;Gamma.hat.fn&quot;           
+##  [5] &quot;kernel.Parzen&quot;           &quot;lv.diff&quot;                
+##  [7] &quot;mu.boot.test&quot;            &quot;mu.diff&quot;                
+##  [9] &quot;mu.hac.test&quot;             &quot;mu.t.test&quot;              
+## [11] &quot;mu.util&quot;                 &quot;prewhite.fn&quot;            
+## [13] &quot;Psi.hat.fn&quot;              &quot;sb.seq&quot;                 
+## [15] &quot;se.Parzen&quot;               &quot;se.Parzen.pw&quot;           
+## [17] &quot;sr.boot.test&quot;            &quot;sr.diff&quot;                
+## [19] &quot;sr.hac.test&quot;             &quot;sr.util&quot;                
+## [21] &quot;var.boot.test&quot;           &quot;var.hac.test&quot;           
+## [23] &quot;var.util&quot;</code></pre>
 <pre class="r"><code># Shared functions on files
 intersect(my, sr)</code></pre>
 <pre><code>## [1] &quot;kernel.Parzen&quot;</code></pre>
@@ -355,7 +362,7 @@ load(&quot;./R/Var.RData&quot;); load(&quot;./R/Sharpe.RData&quot;);</code></pre
 t0 &lt;- Sys.time()
 tmp1 &lt;- boot.time.inference(ret$hedge, b=5, M=499)
 t1 &lt;- Sys.time(); t1-t0</code></pre>
-<pre><code>## Time difference of 1.572322 secs</code></pre>
+<pre><code>## Time difference of 1.617465 secs</code></pre>
 <pre class="r"><code>tmp1</code></pre>
 <pre><code>## $Difference
 ## [1] -0.4463
@@ -369,7 +376,7 @@ tmp2 &lt;- sr.boot.test(ret$hedge,  b=5, M=499)</code></pre>
 ##  ========================== 
 ##  ==========================</code></pre>
 <pre class="r"><code>t1 &lt;- Sys.time(); t1-t0</code></pre>
-<pre><code>## Time difference of 0.3161745 secs</code></pre>
+<pre><code>## Time difference of 0.3217137 secs</code></pre>
 <pre class="r"><code>tmp2</code></pre>
 <pre><code>## $Diff
 ## [1] -0.4463183
@@ -392,7 +399,7 @@ tmp2 &lt;- sr.boot.test(ret$hedge,  b=5, M=499)</code></pre>
 t0 &lt;- Sys.time()
 tmp1 &lt;- unlist(boot.time.inference.log.var(ret$hedge, b=5, M=499))
 t1 &lt;- Sys.time(); t1-t0</code></pre>
-<pre><code>## Time difference of 1.567275 secs</code></pre>
+<pre><code>## Time difference of 1.592866 secs</code></pre>
 <pre class="r"><code>tmp1</code></pre>
 <pre><code>## Difference    p.Value 
 ##      3.955      0.002</code></pre>
@@ -406,7 +413,7 @@ tmp2 &lt;- unlist(var.boot.test(ret$hedge, b=5, M=499)); tmp2</code></pre>
 <pre><code>##     Diff  p.value 
 ## 3.954558 0.002000</code></pre>
 <pre class="r"><code>t1 &lt;- Sys.time(); t1-t0</code></pre>
-<pre><code>## Time difference of 0.3139122 secs</code></pre>
+<pre><code>## Time difference of 0.3108759 secs</code></pre>
 <div id="test-var-boot" class="section level3">
 <h3><span class="header-section-number">5.2.1</span> Test Var boot</h3>
 <pre class="r"><code>all.equal(tmp1[&quot;Difference&quot;], tmp2[&quot;Diff&quot;], check.names=FALSE)</code></pre>
