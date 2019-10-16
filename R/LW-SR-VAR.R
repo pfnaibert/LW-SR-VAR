@@ -49,50 +49,6 @@ return(out)
 }
 
 #####################################
-sr.boot.1 <- function (ret, b, M, Delta.null = 0) 
-{
-T = NROW(ret); l = floor(T/b)
-
-Delta.hat = sharpe.ratio.diff(ret)
-d <- abs(Delta.hat-Delta.null)/se.Parzen.pw(ret, "sr"); # changed
-
-p.value = 1
-
-for (m in (1:M)) {
-ret.star = ret[cbb.seq(T, b), ]; Delta.hat.star = sharpe.ratio.diff(ret.star)
-
-obj <- sr.util(ret.star); gradient <- obj$grad; # y.star <- obj$V.hat
-
-ret1.star = ret.star[, 1]
-ret2.star = ret.star[, 2]
-mu1.hat.star = mean(ret1.star)
-mu2.hat.star = mean(ret2.star)
-gamma1.hat.star = mean(ret1.star^2)
-gamma2.hat.star = mean(ret2.star^2)
-
-y.star = data.frame(ret1.star - mu1.hat.star, ret2.star - mu2.hat.star, ret1.star^2 - gamma1.hat.star, ret2.star^2 - gamma2.hat.star)
-
-Psi.hat.star = matrix(0, 4, 4)
-for (j in (1:l)) {
-    zeta.star = sqrt(b)*colMeans(y.star[((j - 1) * b + 1):(j * 
-        b), ])
-    Psi.hat.star = Psi.hat.star + zeta.star %*% t(zeta.star)
-}
-Psi.hat.star = Psi.hat.star/l
-
-Psi.hat.star = (T / (T - 4)) * Psi.hat.star
-se.star = as.numeric(sqrt(t(gradient) %*% Psi.hat.star %*% gradient/T))
-d.star = abs(Delta.hat.star - Delta.hat)/se.star
-
-if(d.star >= d){p.value = p.value + 1}
-}
-
-p.value = p.value/(M + 1)
-out <- list("Difference" = Delta.hat, "p.Value"=p.value )
-return(out)
-}
-
-#####################################
 sr.boot.test <- function(ret, b=5, M=499, D.null=0) 
 {
 if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
@@ -146,7 +102,7 @@ for(m in (1:M))
 
 if(m%%500==0){cat("\n *** Running Bootstrap with block length", b, "Iteration", m, "out of", M, "***")}
 ret.star <- ret[cbb.seq(T,b),]; D.hat.star <- lv.diff(ret.star)$Diff;
-obj <- var.util(ret); gradient <- obj$grad; y.star <- obj$V.hat
+obj <- var.util(ret.star); gradient <- obj$grad; y.star <- obj$V.hat
 
 Psi.hat.star <- matrix(0, 4, 4)
 for(j in (1:l))
