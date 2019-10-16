@@ -181,6 +181,7 @@ T <- NROW(V.hat)
 
 alpha.hat <- alpha.hat.fn(V.hat)
 S.star    <- 2.6614*(alpha.hat*T)^0.2
+S.star    <- min(S.star, T-1)
 Psi.hat   <- Gamma.hat.fn(V.hat, 0)
 
 j <- 1
