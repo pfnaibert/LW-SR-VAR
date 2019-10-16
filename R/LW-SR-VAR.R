@@ -1,6 +1,7 @@
 ##########################
 # Paulo Ferreira Naibert
 # ORIGINAL: 13 of October of 2019
+# LAST MODIFIED: 16 of October of 2019
 ##########################
 
 ##########################
@@ -122,70 +123,6 @@ cat("\n ========================== \n ")
 p.value = p.value/(M + 1)
 
 out <- list("Diff"=D.hat, "p.value"=p.value)
-return(out)
-}
-
-##########################
-se.Parzen <- function(ret, est) 
-{
-if(!(est %in% c("var", "sr"))){stop("\n est must be either 'var' or 'sr'\n\n")} else
-if(est=="sr") {T <- NROW(ret); obj <- sr.util(ret)} else
-if(est=="var"){T <- NROW(ret); obj <- var.util(ret)}
-
-gradient <- obj$grad; V.hat <- obj$V.hat
-Psi.hat  <- Psi.hat.fn(V.hat)
-
-return(as.numeric(sqrt(crossprod(gradient, Psi.hat)%*%gradient/T) ) )
-}
-
-##########################
-se.Parzen.pw <- function(ret, est) 
-{
-if(!(est %in% c("var", "sr"))){stop("\n est must be either 'var' or 'sr'\n\n")} else
-if(est=="sr") {T <- NROW(ret); obj <- sr.util(ret)} else
-if(est=="var"){T <- NROW(ret); obj <- var.util(ret)}
-
-gradient <- obj$grad; V.hat <- obj$V.hat;
-tmp <- prewhite.fn(V.hat); V.star <- tmp$V.star; D <- tmp$D
-
-Psi.hat <- Psi.hat.fn(V.star); Psi.hat <- D%*%tcrossprod(Psi.hat, D)
-
-return(as.numeric(sqrt(crossprod(gradient, Psi.hat)%*%gradient/T)))
-}
-
-##########################
-prewhite.fn <- function(V.hat)
-{
-
-T <- NROW(V.hat); seq1 <- seq(1, T-1); seq2 <- seq(2, T)
-
-A.ls <- matrix(0, 4, 4); V.star <- matrix(0, T-1, 4)
-reg1 <- V.hat[seq1, 1]; reg2 <- V.hat[seq1, 2]
-reg3 <- V.hat[seq1, 3]; reg4 <- V.hat[seq1, 4]
-
-# VAR FIT
-for(j in (1:4))
-{
-fit      <- lm(V.hat[seq2,j] ~ -1 + reg1 + reg2 + reg3 + reg4)
-A.ls[j,] <- as.numeric(fit$coef); V.star[, j] <- as.numeric(fit$resid)
-}
-
-svd.A <- svd(A.ls); d <- svd.A$d; d.adj <- d
-
-# VAR COEFS ADJ
-for(i in (1:4))
-{
-if(d[i] >  0.97){d.adj[i] <- 0.97} else
-if(d[i] < -0.97){d.adj[i] <- -0.97}
-}
-
-A.hat   <- svd.A$u%*%tcrossprod(diag(d.adj), svd.A$v)
-D       <- solve(diag(4) - A.hat)
-reg.mat <- rbind(reg1, reg2, reg3, reg4)
-
-for(j in (1:4)){V.star[,j] <- V.hat[seq2,j] - A.hat[j,]%*%reg.mat}
-
-out <- list("V.star"=V.star, "D"=D)
 return(out)
 }
 
@@ -327,4 +264,221 @@ out <- seq1[1:T]
 return(out)
 }
 
+##########################
+mu.diff <- function(ret)
+{
+if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
+
+mu1  <-  mean(ret[,1]); mu2 <-  mean(ret[,2]); Diff <- mu1 - mu2
+out <- list("Diff"=Diff, "Means"=c("mu1"=mu1, "mu2"=mu2))
+return(out)
+}
+
 #####################################
+mu.util <- function(ret)
+{
+# utility function to calculate the V.hat AND the gradient
+dat <- ret; mu <- apply(dat, 2, mean)
+
+gradient <- c(1, -1)
+V.hat    <- cbind(dat[,1]-mu[1], dat[,2]-mu[2])
+
+out <- list("grad"=gradient, "V.hat"=V.hat)
+return(out)
+}
+
+##########################
+mu.t.test <- function(ret) 
+{
+if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
+T <- NROW(ret)
+
+obj <- mu.diff(ret); D.hat <- obj$Diff;
+obj <- mu.util(ret); gradient <- obj$grad; V.hat <- obj$V.hat
+Psi.hat <- cov(ret); se <- sqrt(crossprod(gradient, Psi.hat%*%gradient)/T)
+
+test <- D.hat/se; PV  <- 2*pnorm(-abs(test));
+
+out <- list("Diff"=D.hat, "se"=se, "test"=test, "p.value"=PV)
+return(out)
+}
+
+##########################
+mu.hac.test <- function(ret, pw=0) 
+{
+if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
+
+obj <- mu.diff(ret); D.hat <- obj$Diff
+
+if(!(pw %in% c(0, 1))){stop("\n PW must be either '0' or '1' \n\n")} else
+if(pw==0){se <- se.Parzen(ret, "mu")} else
+if(pw==1){se <- se.Parzen.pw(ret, "mu")}
+
+test <- D.hat/se; PV  <- 2*pnorm(-abs(test));
+
+out <- list("Diff"=obj$Diff, "se"=se, "test"=test, "p.value"=PV)
+return(out)
+}
+
+#####################################
+mu.boot.test <- function(ret, b=5, M=499, D.null=0) 
+{
+if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
+
+T <- NROW(ret); l <- floor(T/b);
+D.hat <- mu.diff(ret)$Diff; d <- abs(D.hat-D.null)/se.Parzen.pw(ret, "mu");
+p.value <- 1
+
+cat("\n ========================== ")
+for(m in (1:M))
+{
+
+if(m%%500==0){cat("\n *** Running Bootstrap with block length", b, "Iteration", m, "out of", M, "***")}
+
+ret.star <- ret[cbb.seq(T,b),]; D.hat.star <- mu.diff(ret.star)$Diff; 
+obj <- mu.util(ret.star); gradient <- obj$grad; y.star <- obj$V.hat
+
+Psi.hat.star <- matrix(0, 2, 2)
+for(j in (1:l))
+{
+zeta.star <- sqrt(b)*colMeans(y.star[(1 + (j-1)*b):(j*b),])
+Psi.hat.star <- Psi.hat.star + tcrossprod(zeta.star)
+}
+Psi.hat.star <- (T/(T-4))*Psi.hat.star/l
+
+se.star <- as.numeric(sqrt(crossprod(gradient, Psi.hat.star%*%gradient)/T))
+d.star  <- abs(D.hat.star - D.hat)/se.star
+
+if(d.star >= d){p.value <- p.value + 1}
+}
+cat("\n ========================== \n")
+
+p.value <- p.value/(M + 1)
+
+out <- list("Diff"=D.hat, "p.value"=p.value)
+return(out)
+}
+
+##########################
+se.Parzen <- function(ret, est) 
+{
+if(!(est %in% c("var", "sr", "mu"))){stop("\n est must be either 'var', 'sr', or 'mu' \n\n")} else
+if(est=="sr"){T <-  NROW(ret); obj <- sr.util(ret)} else
+if(est=="var"){T <- NROW(ret); obj <- var.util(ret)} else
+if(est=="mu"){T <-  NROW(ret);  obj <- mu.util(ret)}
+
+gradient <- obj$grad; V.hat <- obj$V.hat
+Psi.hat  <- Psi.hat.fn(V.hat)
+
+return(as.numeric(sqrt(crossprod(gradient, Psi.hat%*%gradient)/T) ) )
+}
+
+##########################
+se.Parzen.pw <- function(ret, est) 
+{
+if(!(est %in% c("var", "sr", "mu"))){stop("\n est must be either 'var', 'sr', or 'mu' \n\n")} else
+if(est=="sr"){T  <- NROW(ret); obj <- sr.util(ret)} else
+if(est=="var"){T <- NROW(ret); obj <- var.util(ret)} else
+if(est=="mu"){T  <- NROW(ret); obj <- mu.util(ret)}
+
+gradient <- obj$grad; V.hat <- obj$V.hat;
+tmp <- prewhite.fn(V.hat); V.star <- tmp$V.star; D <- tmp$D
+
+Psi.hat <- Psi.hat.fn(V.star); Psi.hat <- D%*%tcrossprod(Psi.hat, D)
+
+return(as.numeric(sqrt(crossprod(gradient, Psi.hat)%*%gradient/T)))
+}
+
+##########################
+# N
+prewhite.fn <- function(V.hat)
+{
+
+T <- NROW(V.hat); N <- NCOL(V.hat)
+seq1 <- seq(1, T-1); seq2 <- seq(2, T)
+
+A.ls <- matrix(0, N, N); V.star <- matrix(0, T-1, N)        
+vars <- matrix(0, T-1, N)
+
+for(i in (1:N)){vars[,i] <- V.hat[seq1, i]}
+
+# VAR FIT
+for(j in (1:N))
+{
+fit      <- lm(V.hat[seq2, j] ~ -1 + vars)
+A.ls[j,] <- as.numeric(fit$coef); V.star[, j] <- as.numeric(fit$resid)
+}
+
+svd.A <- svd(A.ls); d <- svd.A$d; d.adj <- d
+
+# VAR COEFS ADJ
+for(i in (1:N))
+{
+if(d[i] >  0.97){d.adj[i] <- 0.97} else
+if(d[i] < -0.97){d.adj[i] <- -0.97}
+}
+
+A.hat   <- svd.A$u%*%tcrossprod(diag(d.adj), svd.A$v)
+D       <- solve(diag(N) - A.hat)
+reg.mat <- t(vars)
+
+for(j in (1:N)){V.star[,j] <- V.hat[seq2,j] - A.hat[j,]%*%reg.mat}
+
+out <- list("V.star"=V.star, "D"=D)
+return(out)
+}
+
+#####################################
+# Original SR boot.time.inference
+
+boot.inference.original <- function (ret, b=5, M=499, Delta.null = 0) 
+{
+
+T = length(ret[, 1]); l = floor(T/b)
+
+Delta.hat = sr.diff(ret)$Diff; d = abs(Delta.hat - Delta.null)/se.Parzen.pw(ret, "sr")
+
+p.value = 1
+
+for(m in (1:M))
+{
+ret.star = ret[cbb.seq(T, b), ]; Delta.hat.star = sr.diff(ret.star)$Diff
+
+ret1.star = ret.star[, 1]
+ret2.star = ret.star[, 2]
+
+mu1.hat.star = mean(ret1.star)
+mu2.hat.star = mean(ret2.star)
+
+gamma1.hat.star = mean(ret1.star^2)
+gamma2.hat.star = mean(ret2.star^2)
+
+gradient = rep(0, 4)
+gradient[1] =  gamma1.hat.star/(gamma1.hat.star - mu1.hat.star^2)^1.5
+gradient[2] = -gamma2.hat.star/(gamma2.hat.star - mu2.hat.star^2)^1.5
+gradient[3] = -0.5 * mu1.hat.star/(gamma1.hat.star - mu1.hat.star^2)^1.5
+gradient[4] =  0.5 * mu2.hat.star/(gamma2.hat.star - mu2.hat.star^2)^1.5
+
+y.star = data.frame(ret1.star - mu1.hat.star, ret2.star - mu2.hat.star, ret1.star^2 - gamma1.hat.star, ret2.star^2 - gamma2.hat.star)
+
+Psi.hat.star = matrix(0, 4, 4)
+
+for (j in (1:l))
+{
+    zeta.star = b^0.5 * colMeans(y.star[((j - 1)* b + 1):(j*b), ])
+    Psi.hat.star = Psi.hat.star + zeta.star %*% t(zeta.star)
+}
+
+Psi.hat.star = Psi.hat.star/l
+Psi.hat.star = (T / (T - 4)) * Psi.hat.star
+se.star = as.numeric(sqrt(t(gradient) %*% Psi.hat.star %*% gradient/T))
+d.star = abs(Delta.hat.star - Delta.hat)/se.star
+
+if(d.star >= d){p.value = p.value + 1}
+}
+
+p.value = p.value/(M + 1)
+
+out <- list(Difference = Delta.hat, p.Value = p.value)
+return(out)
+}
