@@ -1,47 +1,114 @@
 ##########################
-# MY version of LW functions
-# 13 of October of 2019
 # Paulo Ferreira Naibert
+# ORIGINAL: 13 of October of 2019
 ##########################
 
 ##########################
-hac.inf.sr <- function(ret, est="sr", digits = 3) 
+lv.diff <- function(ret)
 {
-obj <- sr.diff(ret); D.hat <- obj$Diff
-se  <- se.Parzen(ret, est); se.pw <- se.Parzen.pw(ret, est)
-SEs <- c(se, se.pw); names(SEs) <- c("HAC", "HAC.pw")
-
-PV  <- 2*pnorm(-abs(D.hat)/se); PV.pw <- 2*pnorm(-abs(D.hat)/se.pw)
-PVs <- c(PV, PV.pw); names(PVs) <- c("HAC", "HAC.pw")
-
-out <- list("SRs"=obj$SRs, "Diff"=D.hat, "SEs"=SEs, pVals = PVs)
-return(out)
-}
-
-##########################
-hac.inf.var <- function(ret, est="var", digits = 3) 
-{
-obj <- lv.diff(ret); D.hat <- obj$Diff
-se  <- se.Parzen(ret, est); se.pw <- se.Parzen.pw(ret, est)
-SEs <- c(se, se.pw); names(SEs) <- c("HAC", "HAC.pw")
-
-PV  <- 2*pnorm(-abs(D.hat)/se); PV.pw <- 2*pnorm(-abs(D.hat)/se.pw)
-PVs <- c(PV, PV.pw); names(PVs) <- c("HAC", "HAC.pw")
-
-out <- list("Vars"=exp(obj$Vars), "Log.Vars"=obj$Vars, "Diff"=obj$Diff, "SEs"=SEs, "pVals" = PVs)
+lv1  <-  log(var(ret[,1])); lv2 <-  log(var(ret[,2])); Diff <- lv1 - lv2
+out <- list("Diff"=Diff, "Vars"=c("Var1"=lv1, "Var2"=lv2))
 return(out)
 }
 
 #####################################
-boot.inf.sr <- function(ret, est="sr", b=5, M=499, D.null=0, digits=4) 
+sr.diff <- function(ret)
 {
-T <- NROW(ret); l <- floor(T/b);
-D.hat <- sr.diff(ret)$Diff; d <- abs(D.hat-D.null)/se.Parzen.pw(ret, est); p.value <- 1
+SR1 <- mean(ret[,1])/sd(ret[,1]); SR2 <- mean(ret[,2])/sd(ret[,2]); Diff <- SR1 - SR2;
+out <- list("Diff"=Diff, "SRs"=c("SR1"=SR1, "SR2"=SR2))
+return(out)
+}
 
+##########################
+var.hac.test <- function(ret, pw=0) 
+{
+obj <- lv.diff(ret); D.hat <- obj$Diff
+
+if(!(pw %in% c(0, 1))){stop("\n PW must be either '0' or '1' \n\n")} else
+if(pw==0){se <- se.Parzen(ret, "var")} else
+if(pw==1){se <- se.Parzen.pw(ret, "var")}
+
+PV  <- 2*pnorm(-abs(D.hat)/se);
+
+out <- list("Diff"=obj$Diff, "se"=se, "p.value"=PV)
+return(out)
+}
+
+##########################
+sr.hac.test <- function(ret, pw=0) 
+{
+obj <- sr.diff(ret); D.hat <- obj$Diff
+
+if(!(pw %in% c(0, 1))){stop("\n PW must be either '0' or '1' \n\n")} else
+if(pw==0){se <- se.Parzen(ret, "sr")}
+if(pw==1){se <- se.Parzen.pw(ret, "sr")}
+PV  <- 2*pnorm(-abs(D.hat)/se);
+
+out <- list("Diff"=D.hat, "se"=se, "p.value"=PV)
+return(out)
+}
+
+#####################################
+sr.boot.1 <- function (ret, b, M, Delta.null = 0) 
+{
+T = NROW(ret); l = floor(T/b)
+
+Delta.hat = sharpe.ratio.diff(ret)
+d <- abs(Delta.hat-Delta.null)/se.Parzen.pw(ret, "sr"); # changed
+
+p.value = 1
+
+for (m in (1:M)) {
+ret.star = ret[cbb.seq(T, b), ]; Delta.hat.star = sharpe.ratio.diff(ret.star)
+
+obj <- sr.util(ret.star); gradient <- obj$grad; # y.star <- obj$V.hat
+
+ret1.star = ret.star[, 1]
+ret2.star = ret.star[, 2]
+mu1.hat.star = mean(ret1.star)
+mu2.hat.star = mean(ret2.star)
+gamma1.hat.star = mean(ret1.star^2)
+gamma2.hat.star = mean(ret2.star^2)
+
+y.star = data.frame(ret1.star - mu1.hat.star, ret2.star - mu2.hat.star, ret1.star^2 - gamma1.hat.star, ret2.star^2 - gamma2.hat.star)
+
+Psi.hat.star = matrix(0, 4, 4)
+for (j in (1:l)) {
+    zeta.star = sqrt(b)*colMeans(y.star[((j - 1) * b + 1):(j * 
+        b), ])
+    Psi.hat.star = Psi.hat.star + zeta.star %*% t(zeta.star)
+}
+Psi.hat.star = Psi.hat.star/l
+
+Psi.hat.star = (T / (T - 4)) * Psi.hat.star
+se.star = as.numeric(sqrt(t(gradient) %*% Psi.hat.star %*% gradient/T))
+d.star = abs(Delta.hat.star - Delta.hat)/se.star
+
+if(d.star >= d){p.value = p.value + 1}
+}
+
+p.value = p.value/(M + 1)
+out <- list("Difference" = Delta.hat, "p.Value"=p.value )
+return(out)
+}
+
+#####################################
+sr.boot.test <- function(ret, b=5, M=499, D.null=0) 
+{
+if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
+
+T <- NROW(ret); l <- floor(T/b);
+D.hat <- sr.diff(ret)$Diff; d <- abs(D.hat-D.null)/se.Parzen.pw(ret, "sr");
+p.value <- 1
+
+cat("\n ========================== ")
 for(m in (1:M))
 {
-ret.star <- ret[cbb.seq(T,b),]; D.hat.star <- sr.diff(ret.star)$Diff;
-obj <- sr.util(ret); gradient <- obj$grad; y.star <- obj$V.hat
+
+if(m%%500==0){cat("\n *** Running Bootstrap with block length", b, "Iteration", m, "out of", M, "***")}
+
+ret.star <- ret[cbb.seq(T,b),]; D.hat.star <- sr.diff(ret.star)$Diff; 
+obj <- sr.util(ret.star); gradient <- obj$grad; y.star <- obj$V.hat
 
 Psi.hat.star <- matrix(0, 4, 4)
 for(j in (1:l))
@@ -49,28 +116,35 @@ for(j in (1:l))
 zeta.star <- sqrt(b)*colMeans(y.star[(1 + (j-1)*b):(j*b),])
 Psi.hat.star <- Psi.hat.star + tcrossprod(zeta.star)
 }
+Psi.hat.star <- (T/(T-4))*Psi.hat.star/l
 
-Psi.hat.star <- (T/(T-4))*Psi.hat.star/l # added (T/T-4)
-se.star <- as.numeric(sqrt(crossprod(gradient, Psi.hat.star)%*%gradient/T))
-d.star <- abs(D.hat.star - D.hat)/se.star
+se.star <- as.numeric(sqrt(crossprod(gradient, Psi.hat.star%*%gradient)/T))
+d.star  <- abs(D.hat.star - D.hat)/se.star
 
 if(d.star >= d){p.value <- p.value + 1}
 }
+cat("\n ========================== \n")
 
 p.value <- p.value/(M + 1)
 
-out <- list("Diff"=round(D.hat, digits), "pVal" = round(p.value,digits))
+out <- list("Diff"=D.hat, "p.value"=p.value)
 return(out)
 }
 
 ##########################
-boot.inf.var <- function (ret, est="var", b=5, M=499, D.null = 0, digits = 3) 
+var.boot.test <- function(ret, b=5, M=499, D.null = 0) 
 {
-T <- NROW(ret); l <- floor(T/b);
-D.hat <- lv.diff(ret)$Diff; d <- abs(D.hat - D.null)/se.Parzen.pw(ret, est); p.value <- 1
+if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
 
+T <- NROW(ret); l <- floor(T/b); 
+D.hat <- lv.diff(ret)$Diff; d <- abs(D.hat - D.null)/se.Parzen.pw(ret, "var");
+p.value <- 1
+
+cat("\n ========================== ")
 for(m in (1:M))
 {
+
+if(m%%500==0){cat("\n *** Running Bootstrap with block length", b, "Iteration", m, "out of", M, "***")}
 ret.star <- ret[cbb.seq(T,b),]; D.hat.star <- lv.diff(ret.star)$Diff;
 obj <- var.util(ret); gradient <- obj$grad; y.star <- obj$V.hat
 
@@ -87,26 +161,11 @@ d.star  <- abs(D.hat.star - D.hat)/se.star
 
 if(d.star >= d){p.value <- p.value + 1}
 }
+cat("\n ========================== \n ")
 
 p.value = p.value/(M + 1)
 
-out <- list(Difference = round(D.hat, digits), p.Value = round(p.value, digits))
-return(out)
-}
-
-#####################################
-sr.diff <- function(ret)
-{
-SR1 <- mean(ret[,1])/sd(ret[,1]); SR2 <- mean(ret[,2])/sd(ret[,2]); Diff <- SR1 - SR2;
-out <- list("Diff"=Diff, "SRs"=c("SR1"=SR1, "SR2"=SR2))
-return(out)
-}
-
-##########################
-lv.diff <- function(ret)
-{
-lv1  <-  log(var(ret[,1])); lv2 <-  log(var(ret[,2])); Diff <- lv1 - lv2
-out <- list("Diff"=Diff, "Vars"=c("Var1"=lv1, "Var2"=lv2))
+out <- list("Diff"=D.hat, "p.value"=p.value)
 return(out)
 }
 
@@ -124,7 +183,7 @@ return(as.numeric(sqrt(crossprod(gradient, Psi.hat)%*%gradient/T) ) )
 }
 
 ##########################
-se.Parzen.pw <- function (ret, est) 
+se.Parzen.pw <- function(ret, est) 
 {
 if(!(est %in% c("var", "sr"))){stop("\n est must be either 'var' or 'sr'\n\n")} else
 if(est=="sr") {T <- NROW(ret); obj <- sr.util(ret)} else
@@ -196,13 +255,13 @@ return((T/(T-4))*Psi.hat)
 }
 
 ##########################
-Gamma.hat.fn <- function (V.hat, j) 
+Gamma.hat.fn <- function(V.hat, j) 
 {
 T <- NROW(V.hat); p <- NCOL(V.hat); Gamma.hat <- matrix(0, p, p)
 
-if (j >= T){ stop("j must be smaller than the row dimension!") }
+if(j >= T){ stop("j must be smaller than the row dimension!") }
 
-for (i in ((j + 1):T)){Gamma.hat <- Gamma.hat + tcrossprod(V.hat[i, ], V.hat[i - j, ]) } 
+for(i in ((j + 1):T)){Gamma.hat <- Gamma.hat + tcrossprod(V.hat[i, ], V.hat[i - j, ]) } 
 
 return(Gamma.hat/T)
 }
@@ -213,7 +272,7 @@ alpha.hat.fn <- function(V.hat)
 
 T <- NROW(V.hat); p <- NCOL(V.hat); num <- 0; den <- 0
 
-for (i in (1:p))
+for(i in (1:p))
 {
 fit <- ar(V.hat[, i], 0, 1, method = "ols")
 rho.hat <- as.numeric(fit[2])
@@ -271,25 +330,26 @@ return(out)
 }
 
 #####################################
-cbb.seq <- function (T, b)
+cbb.seq <- function(T, b)
 {
 # Circluar bootstrap # Boot data is made of l blocks of size b
+# circular bootstrap has UNIT MASS (only b=5 allowed)
+T1 <- seq(1, T); l <- floor(T/b);
 
-l      <- floor(T/b)                        # number of blocks
-id.seq <- c(1:T, 1:b)                       # wrap the data around a circle
-seq1   <- rep(0, T)
-start.points <- sample(1:T, l, replace = T) # index where the block starts
+ids0 <- c(T1, 1:b)    # wrap the data around a circle # original indexes
+ids1 <- rep(0, T)  # bootstrap indexes 
+sps  <- sample(T1, l,replace=TRUE) # index where the block starts
 
-for(j in (1:l))
+for(j in seq(1, l))
 {
-start <- start.points[j]
-seq1[((j - 1)*b + 1):(j*b)] <- id.seq[start:(start + b - 1)]
+ids1[seq((1 + (j-1)*b), (j*b))] <- ids0[seq(sps[j], (sps[j] + b - 1))]
 }
 
-return(seq1)
+return(ids1)
 }
 
 #####################################
+# sb.seq (MEU)
 sb.seq <- function(T, b.av) 
 {
 # Stationary bootstrap # Boot data is made of l block with average size b
