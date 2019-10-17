@@ -54,7 +54,7 @@ return(as.numeric(sqrt((1/T)*crossprod(gradient, Psi.hat%*%gradient))) )
 ##########################
 Psi.hat.fn <- function(V.hat) 
 {
-T <- NROW(V.hat)
+T <- NROW(V.hat); K <- NCOL(V.hat)
 
 alpha.hat <- alpha.hat.fn(V.hat)
 S.star    <- 2.6614*(alpha.hat*T)^0.2; S.star <- min(S.star, T-1)
@@ -68,7 +68,7 @@ Psi.hat   <- Psi.hat + kernel.Parzen(j/S.star)*(Gamma.hat + t(Gamma.hat))
 j         <- j + 1
 }
 
-return((T/(T-4))*Psi.hat)
+return((T/(T-K))*Psi.hat)
 }
 
 ##########################
@@ -174,15 +174,15 @@ ret.star   <- ret[cbb.seq(T,b),];
 D.hat.star <- est.diff(ret.star, est, rav)$Diff; 
 
 obj <- util.fn(ret.star, est, rav); gradient <- obj$grad; y.star <- obj$V.hat
-N   <- NCOL(y.star)
+K   <- NCOL(y.star)
 
-Psi.hat.star <- matrix(0, N, N)
+Psi.hat.star <- matrix(0, K, K)
 for(j in (1:l))
 {
 zeta.star <- sqrt(b)*colMeans(y.star[(1 + (j-1)*b):(j*b),])
 Psi.hat.star <- Psi.hat.star + tcrossprod(zeta.star)
 }
-Psi.hat.star <- (T/(T-4))*Psi.hat.star/l
+Psi.hat.star <- (T/(T-K))*Psi.hat.star/l
 
 se.star <- as.numeric(sqrt((1/T)*crossprod(gradient, Psi.hat.star%*%gradient)))
 d.star  <- abs(D.hat.star - D.hat)/se.star
