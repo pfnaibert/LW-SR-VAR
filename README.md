@@ -4,7 +4,7 @@ Paulo Ferreira Naibert
 
 Original: 2019 October 13.
 
-Current: 16, outubro, 2019
+Current: 17, outubro, 2019
 
 Overview
 ========
@@ -14,6 +14,8 @@ This Repository contains functions to replicate Ledoit and Wolf (2008) and Ledoi
 Michael Wolf provides `R` codes for those two papers on [his webpage](https://www.econ.uzh.ch/en/people/faculty/wolf.html), in the [publications section](https://www.econ.uzh.ch/en/people/faculty/wolf/publications.html).
 
 What is found here is merely an edit of those codes.
+
+If you find any bug, or technical error, please contact me.
 
 PAPERS and GOALS of the code
 ============================
@@ -27,28 +29,40 @@ Functions
 
 I copied the original functions on `Sharpe.RData` and `Var.RData` into the files: `"SR-ORIGINAL.R"` and `"Var-ORIGINAL.R"` with some minor modifications. Then I copied the functions to the file `"LW-SR-Var.R"` and modified them more.
 
-I didn't have enought time to modify the `bloc.size.calibrate()` functions.
+I didn't have enought time to modify the `block.size.calibrate()` functions.
 
 Data
 ====
 
 For the data, I simpy saved the returns data of `Sharpe.RData` as a `.RDS` file. Loading `rets.RDS` should result in a list object on the `R` Software (R Core Team 2019) .
 
+USAGE
+=====
+
+See DEMO files.
+
 TODO
 ====
 
--   Document Functions (.tex?)
--   Add technincal notes
--   Add Mean test
--   Add E-V utility test (West, Edison, and Cho 1993, Kirby and Ostdiek (2012))
+-   Document Functions (.tex?, .Rmd?, .org?)
+-   Add technincal notes (vignettes)
+-   Add Mean test (validate)
+-   Add CEQ test (DeMiguel, Garlappi, and Uppal 2009, Kirby and Ostdiek (2012), West, Edison, and Cho (1993)) (validate)
 
 DISCLAIMER
 ==========
 
 I own NONE of the rights to the codes. I simply edited the already existing codes in [Michael Wolf's Webpage](https://www.econ.uzh.ch/en/people/faculty/wolf.html). I also offer NO support for the functions. They are presented "AS IS".
 
+ACKNOWLEDGEMENTS
+================
+
+I would like to thank Michael Wolf for providing the original functions on his webstite.
+
 REFERENCES
 ==========
+
+DeMiguel, Victor, Lorenzo Garlappi, and Raman Uppal. 2009. “Optimal Versus Naive Diversification: How Inefficient is the 1-N Portfolio Strategy?” *Review of Financial Studies* 22 (5): 1915–53.
 
 Kirby, Chris, and Barbara Ostdiek. 2012. “It’s All in the Timing: Simple Active Portfolio Strategies That Outperform Naïve Diversification.” *Journal of Financial and Quantitative Analysis* 47 (2): 437–67.
 

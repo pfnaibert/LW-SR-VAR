@@ -19,6 +19,8 @@ in the
 
 What is found here is merely an edit of those codes.
 
+If you find any bug, or technical error, please contact me.
+
 # PAPERS and GOALS of the code
 On @lw2008-sr and @lw2011-var, the authors provide methods to test the hypothesis of difference in the Sharpe Ratio and the Variance of two investment strategies.
 The papers can be found in the following links:
@@ -33,19 +35,22 @@ The papers can be found in the following links:
 I copied the original functions on `Sharpe.RData` and `Var.RData` into the files: `"SR-ORIGINAL.R"` and `"Var-ORIGINAL.R"` with some minor modifications.
 Then I copied the functions to the file `"LW-SR-Var.R"` and modified them more.
 
-I didn't have enought time to modify the `bloc.size.calibrate()` functions.
-
+I didn't have enought time to modify the `block.size.calibrate()` functions.
 
 # Data
 
 For the data, I simpy saved the returns data of `Sharpe.RData` as a `.RDS` file.
 Loading `rets.RDS` should result in a list object on the `R` Software [@R] .
 
+# USAGE
+
+See DEMO files.
+
 # TODO
-- Document Functions (.tex?)
-- Add technincal notes
-- Add Mean test
-- Add E-V utility test [@wec93, @fko2012]
+- Document Functions (.tex?, .Rmd?, .org?)
+- Add technincal notes (vignettes)
+- Add Mean test (validate)
+- Add CEQ test [@dgu2009, @fko2012, @wec93] (validate)
 
 # DISCLAIMER
 
@@ -54,5 +59,8 @@ I simply edited the already existing codes in
 [Michael Wolf's Webpage](https://www.econ.uzh.ch/en/people/faculty/wolf.html).
 I also offer NO support for the functions.
 They are presented "AS IS".
+
+# ACKNOWLEDGEMENTS
+I would like to thank Michael Wolf for providing the original functions on his webstite.
 
 # REFERENCES
