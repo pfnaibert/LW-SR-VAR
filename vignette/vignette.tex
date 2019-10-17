@@ -6,20 +6,16 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Pacotes básicos 
-% \usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
-\usepackage[0T1]{fontenc}		% Selecao de codigos de fonte.
+ \usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
 \usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
 \usepackage[english]{babel}
 % \selectlanguage{english}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Pacotes de citações
-% BIBLIOGRAPHYSTYLE (BST) DIFERENTE LA EM BAIXO
-% \usepackage[alf]{abntex2cite}	% Citações padrão ABNT 
 \usepackage{natbib}	% Citações}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \usepackage{lastpage}			% Usado pela Ficha catalográfica
 \usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
 \usepackage{color}				% Controle das cores
 \usepackage{graphicx}			% Inclusão de gráficos
@@ -75,11 +71,10 @@
 \thispagestyle{headings}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TEXT
-\section{Sharpe Testing}
-\cite{lw2008-sr}
+\section{Generalized Testing}
+Based on \cite{lw2008-sr, lw2011-var}.
 
-$T$ pairs: $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$.
-
+We observe $T$ pairs of returns, $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$, with a bivariate return distribution:
 % pairs as matrix
 % $T \times 2$ matrix:
 % 
@@ -90,7 +85,6 @@ $T$ pairs: $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$.
 % \end{align}
 
 % NORMAL BIVARIATE
-Bivariate return distribution:
 \begin{align*}
 \mu=
 \begin{bmatrix}
@@ -99,78 +93,201 @@ Bivariate return distribution:
 \quad
 \Sigma=
 \begin{bmatrix}
-\sigma_{i}^2 & \sigma_{ni}
+\sigma_{i}^2 & \sigma_{in}
 \\
 \sigma_{in} & \sigma_{n}^2
 \end{bmatrix}.
 \end{align*}
 
 % sample counterparts
-Any quantity $x$ when denoted as $\hat{x}$ simply means its sample counterpart, e.g. $\hat{\mu}$ denotes the sample counterpart of $\mu$.
+\textbf{NOTE:} Any quantity $x$ when denoted as $\hat{x}$ simply means its sample counterpart, e.g. $\hat{\mu}$ denotes the sample counterpart of $\mu$.
 
-% Classical testing
-Define the difference in Sharpe Ratios as:
-\begin{align}
-	\Delta = SR_{i} - SR_{n} = \frac{\mu_{i}}{\sigma_{i}} - \frac{\mu_{n}}{\sigma_{n}},
-\end{align}
-further, define $\Delta$ as a function of $u = (\mu_{i}, \mu_{n}, \sigma^2_{i}, \sigma^2_{n})'$.
-So,
-% delta as a fun of u
-\begin{align}
-\Delta = f(u) &= SR_{i} - SR_{n} 
-= \frac{\mu_{i}}{\sqrt{\sigma^2_{i}}} - \frac{\mu_{n}}{\sqrt{\sigma^2_{n}}}.
-\end{align}
-
-The gradient of $f(u)$ is:
-% gradient of f(u)
+% Statistic
+Define a primitive statistic $\tau$ as a function of data, define a ``derived'' statistic $\delta$ as a function of the primitive statistics, and finally, define $\Delta$ as the difference of derived statistics, then we have:
 \begin{align*}
-\nabla' f(u) &=
+	\Delta = \delta_{i} - \delta_{n} = \delta(\tau(r_{ti})) - \delta(\tau(r_{tn}))
+\end{align*}
+
+We can also define $\Delta$ as a function of the $K \times 1$ vector of primitive statistics $v$:
+
+\begin{align*}
+	\Delta = f(v)
+\end{align*}
+
+Then we can define the $\nabla f(v)$ as the gradient of $f(v)$:
+
+% gradient of f(v)
+\begin{align*}
+\nabla' f(v) &=
 \left( 
-\pdf{f(u)}{\mu_{i}},
-\pdf{f(u)}{\mu_{n}},
-\pdf{f(u)}{\sigma_{i}},
-\pdf{f(u)}{\sigma_{n}}
+\pdf{f(u)}{v_{1}},
+\dots
+\pdf{f(u)}{v_{n}},
 \right)
-% \\ &=
-% \left( 
-% \frac{ \gamma_{i}}{(\gamma_{i} - \mu_{i}^2)^{3/2}},
-% \frac{-\gamma_{n}}{(\gamma_{n} - \mu_{n}^2)^{3/2}}, 
-% \frac{-\mu_{i}}{2(\gamma_{i} - \mu_{i}^2)^{3/2}},  
-% \frac{ \mu_{n}}{2(\gamma_{n} - \mu_{n}^2)^{3/2}}
-% \right) .
 \end{align*}
 
 % 
 Assume that:
 \begin{align*}
-	T^{1/2}(u - \hat{u}) \to^d N(0, \Omega),
+	T^{1/2}(v - \hat{v}) \to^d N(0, \Psi),
 \end{align*}
-where $\Omega$ is an unknown symmetric PSD matrix.
+where $\Psi$ is an unknown symmetric PSD matrix.
 
-If we apply a function on the vector $u$ of parameters, the Taylor expansion (Delta method) implies:
+If we apply a function on the vector $v$ of parameters, the Taylor expansion (Delta method) implies:
 \begin{align*}
-T^{1/2}[f(u) - f(\hat{u})] \to^d N \left( 0; \nabla'f(u) \Omega \nabla f(u)  \right).
+T^{1/2}[f(v) - f(\hat{v})] \to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
 \end{align*}
 
-Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(u) = \Delta$, so we have:
+Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(v) = \Delta$, so we have:
 \begin{align*}
-T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(u) \Omega \nabla f(u)  \right).
+T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
 \end{align*}
 
-Now, if a consistent estimator $\hat{\Omega}$ of $\Omega$ is available, then $se(\hat{\Delta})$ is given by:
+Now, if a consistent estimator $\hat{\Psi}$ of $\Psi$ is available, then the standard error of the estimate $\hat{\Delta}$, $s(\hat{\Delta})$, is given by:
 % se(delta.hat)
 \begin{align}
-se(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{u}) \hat{\Omega} \nabla f(\hat{u})}.
+s(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
 \end{align}
 
-The problem is that \cite{jb81-sr} uses a formula for $\hat{\Omega}$ that crucially relies on $iid$ return data for a bivariate normal distribution:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Estimating $\hat{\Psi}$}
+
+Let's estimate $\hat{\Psi}$:
+
 \begin{align*}
-\Omega = 
+\Psi &= \lim_{T \to \infty} T^{-1} \sum_{s=1}^{T}\sum_{t=1}^{T} E[y_{s}y'_{t}],
+\quad \text{with } \quad
+y_{t}' = \left(  r_{ti} - \mu_{i}, r_{tn} - \mu_{n}, r^2_{ti} - \gamma_{i}, r^2_{tn} - \gamma_{n} \right)
+\end{align*}
+
+% psi fun
+\begin{align*}
+	\Psi &= \lim_{T \to \infty} \Psi_{t},
+	\quad \text{ with } \quad
+	\Psi = \sum_{j=-T+1}^{T-1} \Gamma_{T}(j),
+	\qquad \text{where}
+\end{align*}
+
+% gamma fun
+\begin{align*}
+	\Gamma_{T}(j) &=
+\begin{cases}
+	T^{-1} \sum_{t=j+1}^{T}	E[y_{t}y'_{t-j}] & \text{for } j \geq 0
+	\\
+	T^{-1} \sum_{t=-j+1}^{T} E[y_{t+j}y'_{t}]& \text{for } j<0
+\end{cases}
+\end{align*}
+\red{Are those $E(\cdot)$ necessary, since we are already taking means?}
+
+% Psi hat
+\begin{align*}
+	\hat{\Psi} = \hat{\Psi}_{T} =
+	\frac{T}{T-K}
+	\sum_{j=-T+1}^{T-1}
+	k\left( \frac{j}{S_{T}} \right) \hat{\Gamma}_{T}(j), && \text{where}
+\end{align*}
+
+% Gamma hat
+\begin{align*}
+	\hat{\Gamma}_{T}(j) &=
+\begin{cases}
+	T^{-1} \sum_{t=j+1}^{T}	\hat{y}_{t} \hat{y}'_{t-j} & \text{for } j \geq 0
+	\\
+	T^{-1} \sum_{t=-j+1}^{T} \hat{y}_{t+j} \hat{y}'_{t}& \text{for } j<0
+\end{cases}
+\end{align*}
+
+\begin{quote}
+{\footnotesize
+The factor $T/(T-K)$ is a small sample degrees of freedom adjustment that is introduced to offset the effect of the estimation of the $K \times 1$ vector $v$ in the computation $\hat{\Gamma}_{T}(j)$, that is, the use of $\hat{y}_{t}$ rather than $y_{t}$.}
+\end{quote}
+
+A two-sided $p$-value for the Null hypothesis $H_{0}: \Delta=0$ is givenby:
+
+\begin{align*}
+	\hat{p} = 2 \Phi\left( \frac{|\hat{\Delta}|}{s(\hat{\Delta})} \right)
+\end{align*}
+where $\Psi$ denotes the cdf of the standard normal distribution.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Bootstrap Inference}
+
+Circular Boostrap of \blue{Politis and Romano (1992)}, resampling now \textit{blocks of pairs} from the observed pairs $(r_{ti}, r_{tn})'$, $t=1, \dots, T$ \textit{with replacement}.
+These block have a \textit{fixed} size $b\geq1$.
+Standard error is computed as:
+% standard error sd, se
+\begin{align*}
+se(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
+\end{align*}
+The estimator (\red{estimate?}) $\hat{\Psi}$ is obtained via kernel estimation.
+
+Standard error $se(\hat{\Delta}^{*})$ is the ``natural'' standard error computed from the bootstrap data.
+More specifically, letting $l=\floor{T/b}$, define:
+
+\begin{align}
+	y_{t}^{*} = \left(  r_{ti}^{*} - \hat{\mu}_{i}^{*}, r_{tn}^{*} - \hat{\mu}_{n}^{*}, r^2_{ti}^{*} - \hat{\gamma}_{i}^{*}, r^2_{tn}^{*} - \hat{\gamma}_{n}^{*} \right), 
+	\quad t=1, \dots T
+\end{align}
+
+\begin{align}
+	\zeta_{j}=b^{-1/2}\sum_{t=1}^{b} y_{t+(j-1)b}^{*},
+	\quad t=1,\dots,l
+\end{align}
+
+and
+
+\begin{align}
+	\hat{\Psi}^{*}=l^{-1}\sum_{j=1}^{l} \zeta_{j} \zeta_{j}'.
+\end{align}
+With this more genral definition, of $\hat{\Psi}^{*}$, the bootstrap error is given by:
+
+\begin{align*}
+	se(\hat{\Delta}^{*}) =
+	\sqrt{T^{-1} \nabla'f(\hat{v}^{*}) \hat{\Psi}^{*} \nabla f(\hat{v}^{*})}.
+\end{align*}
+
+\subsubsection{Direct Computation of the $p$-value}
+\blue{Remark 3.2 on the original paper}
+
+Denote the original studentized test statistic by:
+\begin{align}
+	d = \frac{|\hat{\Delta}|}{s(\hat{\Delta})}
+\end{align}
+and denote the \textit{centered} studentized test statistic computed from the $m$th bootstrap sample by: % $\tilde{d}^{*, m}$, $m=1, \dots, M$, that is:
+\begin{align}
+	\tilde{d}^{*, m} = \frac{|\hat{\Delta}^{*,m} - \hat{\Delta}|}{s(\hat{\Delta}^{*,m})}
+\end{align}
+where $M$ is the number of bootstrap resamples.
+Then the $p$-value is computed as:
+\begin{align}
+	PV =\frac{\#\{ \tilde{d}^{*, m} \geq d\} + 1}{M+1}.
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Classical testing
+\clearpage
+\section{Sharpe Ratio Example}
+
+Define the difference in Sharpe Ratios as function of the vector $u = (\mu_{i}, \mu_{n}, \sigma^2_{i}, \sigma^2_{n})'$:
+\begin{align}
+\Delta = f(u) &= SR_{i} - SR_{n} 
+= \frac{\mu_{i}}{\sqrt{\sigma^2_{i}}} - \frac{\mu_{n}}{\sqrt{\sigma^2_{n}}}.
+\end{align}
+
+Now, we need an estimator $\hat{\Psi}$ for $\Psi$, to find the standar error:
+% se(delta.hat)
+\begin{align}
+s(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{u}) \hat{\Psi} \nabla f(\hat{u})}.
+\end{align}
+
+The problem in \cite{jb81-sr} is that they uses a formula for $\hat{\Psi}$ that crucially relies on $iid$ return data for a bivariate normal distribution:
+\begin{align*}
+\Psi = 
 \begin{bmatrix}
-\sigma_{i} & \sigma_{n} & 0 & 0 \\
-\sigma_{i} & \sigma_{n} & 0 & 0 \\
-0 & 0 & 2\sigma^{4}_{i} & 2\sigma^{4}_{n}  \\
-0 & 0 & 2\sigma^{4}_{i} & 2\sigma^{4}_{n}  \\
+\sigma^2_{i} & \sigma_{in} & 0 & 0 \\
+\sigma_{in} & \sigma^2_{n} & 0 & 0 \\
+0 & 0 & 2\sigma^{4}_{i} & 2\sigma^{2}_{in}  \\
+0 & 0 & 2\sigma^{2}_{in} & 2\sigma^{4}_{n}  \\
 \end{bmatrix}
 \end{align*}
 
@@ -180,19 +297,22 @@ Further information can be found in: \cite{lo02-sr, jb81-sr}.
 % Ledoit SR
 \subsection{Ledoit and Wolf (2008)}
 
-Define the uncentered second moments as:
+They correct \cite{jb81-sr} using robust estimates for $\Psi$.
+They also use the bootstrap to find better $p$-values.
+
+They work with the uncentered second moments, so we define 
 \begin{align*}
 	\gamma_{i} = E(r_{it}^{2}), \; \gamma_{n} = E(r_{nt}^{2}),
 \end{align*}
-and define the vector 
+then, our vector of primitive statistics is
 \begin{align*}
 v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'.
 \end{align*}
 
-Then, we define $\Delta$ as a function of $v$:
+Defining $\Delta$ as a function of $v$:
 \begin{align}
 \Delta = f(v) &= SR_{i} - SR_{n} = 
-\frac{\mu_{i}}{\sqrt{\sigma^2_{i}}} - \frac{\mu_{n}}{\sqrt{\sigma^2_{n}}}.
+\frac{\mu_{i}}{\sqrt{\gamma_{i} - \mu^2_{i}}} - \frac{\mu_{n}}{\sqrt{\gamma_{n} - \mu^2_{n}}}.
 \end{align}
 
 The gradient of $f(v)$ is:
@@ -213,27 +333,12 @@ The gradient of $f(v)$ is:
 \right).
 \end{align*}
 
-Assume that:
+Now the standar error, $s(\hat{\Delta})$, is given by:
 \begin{align*}
-T^{1/2}(v - \hat{v}) \to^d N(0, \Psi),
-\end{align*}
-where $\Psi$ is an unknown symmetric PSD matrix.
-
-If we apply a function on the vector $v$ of parameters, the Taylor expansion (Delta method) implies:
-\begin{align*}
-T^{1/2}[f(v) - f(\hat{v})] \to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+s(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
 \end{align*}
 
-Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(v) = \Delta$, so we have:
-\begin{align*}
-T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
-\end{align*}
-
-Now, if a consistent estimator $\hat{\Psi}$ of $\Psi$ is available, then $se(\hat{\Delta})$ is given by:
-\begin{align*}
-se(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
-\end{align*}
-
+with a robust estimator for $\Psi$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % VARIANCE TESTING
 \clearpage \section{Variance Testing}
