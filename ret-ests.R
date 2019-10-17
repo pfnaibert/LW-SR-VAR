@@ -30,4 +30,10 @@ plot(density(ret$mutual[,2]), main="Density Plot of mutual2")
 plot(density(d.m), main="Density Plot of Ret Diff of Mutuals")
 
 #######################################
+# TODO
+# rets against time
+# rets^2 against time
+# autocorrelation
+
+#######################################
 cat(" \n ***** END OF SCRIPT ****** \n")
