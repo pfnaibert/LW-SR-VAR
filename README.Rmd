@@ -10,7 +10,7 @@ Original: 2019 October 13.
 Current: `r format(Sys.time(), "%d, %B, %Y")`
 
 # Overview
-This Repository contains functions to replicate @lw2008-sr and @lw2011-var.
+This Repository contains functions to replicate @lw2008 and @lw2011 @lw2018.
 
 Michael Wolf provides `R` codes for those two papers on 
 [his webpage](https://www.econ.uzh.ch/en/people/faculty/wolf.html), 
