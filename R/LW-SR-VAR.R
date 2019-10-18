@@ -1,10 +1,21 @@
+#' --- 
+#' title: Functions to replicate Ledoit and Wolf (2008, 2011)
+#' author: "Paulo Ferreira Naibert" 
+#' output: 
+#'   html_document:
+#'     toc: false
+#'     number_sections: true
+#' keep_tex: true
+#' bibliography: ../refs.bib
+#' --- 
+
 ##########################
-# Paulo Ferreira Naibert
 # ORIGINAL: 13 of October of 2019
 # LAST MODIFIED: 17 of October of 2019
 ##########################
 
 ##########################
+#' utility function to test the difference in statistics
 diff.test <- function(ret, est, rav=1, kernel="parzen", pw=0) 
 {
 
@@ -24,6 +35,7 @@ return(out)
 }
 
 ##########################
+#' 
 se.fn <- function(ret, est, rav=1, kernel="parzen", pw=0) 
 {
 if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
@@ -52,6 +64,7 @@ return(as.numeric(sqrt((1/T)*crossprod(gradient, Psi.hat%*%gradient))) )
 }
 
 ##########################
+#' 
 Psi.hat.fn <- function(V.hat) 
 {
 T <- NROW(V.hat); K <- NCOL(V.hat)
@@ -72,6 +85,7 @@ return((T/(T-K))*Psi.hat)
 }
 
 ##########################
+#' 
 Gamma.hat.fn <- function(V.hat, j) 
 {
 T <- NROW(V.hat); p <- NCOL(V.hat); Gamma.hat <- matrix(0, p, p)
@@ -82,6 +96,7 @@ return(Gamma.hat/T)
 }
 
 ##########################
+#' 
 alpha.hat.fn <- function(V.hat) 
 {
 
@@ -100,6 +115,7 @@ return(num/den)
 }
 
 ##########################
+#' Parzen Kernel function
 kernel.Parzen <- function(x) 
 {
 if(abs(x) <= 0.5){result <- 1 - 6*x^2 + 6*abs(x)^3}
@@ -109,8 +125,9 @@ return(result)
 }
 
 ##########################
-# Handles V.hat with N columns
-# PW handles only VAR models
+#' Function to prewhiten V.hat
+#' Handles V.hat with N columns
+#' PW handles only VAR models
 prewhite.fn <- function(V.hat)
 {
 
@@ -149,6 +166,8 @@ return(out)
 }
 
 #####################################
+#' Robust Hipothesis test using bootstrap
+#' see @lw2008-sr and @lw2011-var 
 boot.test <- function(ret, est, rav=1, b=5, M=499, D.null=0) 
 {
 if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
@@ -198,6 +217,7 @@ return(out)
 }
 
 #####################################
+#' Provide sequence for the Circular block bootstrap
 cbb.seq <- function(T, b)
 {
 # Circluar bootstrap
@@ -218,6 +238,7 @@ return(ids1)
 }
 
 #####################################
+#' Provide sequence for the Stationary bootstrap
 sb.seq <- function(T, b.av) 
 {
 # Stationary bootstrap
@@ -241,6 +262,9 @@ return(out)
 }
 
 ##########################
+#' function to calculate the difference in statistics
+#' current supported statistics:
+#' mean, var, sr, ceq.
 est.diff <- function(ret, est, rav=1)
 {
 if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
@@ -254,12 +278,15 @@ if(est=="sr"){est1  <- mean(ret[,1])/sd(ret[,1]); est2 <- mean(ret[,2])/sd(ret[,
 
 Diff <- est1 - est2
 
-out <- list("Diff"=Diff, "ests"=c("est1"=est1, "est1"=est2))
+out <- list("Diff"=Diff, "ests"=c("est1"=est1, "est2"=est2))
 return(out)
 }
 
 #####################################
-# utility function to calculate the V.hat AND the gradient
+#' utility function to calculate the V.hat AND the gradient
+#' see @lw2008-sr and @lw2011-var p.XX
+#' current supported statistics:
+#' mean, var, sr, ceq.
 util.fn <- function(ret, est, rav=1)
 {
 
@@ -309,3 +336,5 @@ return(out)
 }
 
 #####################################
+
+#' # REFERENCES
