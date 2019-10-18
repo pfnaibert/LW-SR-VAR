@@ -478,7 +478,12 @@ str(ret)</code></pre>
 <pre><code>## [1] &quot;Mean relative difference: 0.0001724445&quot;</code></pre>
 <pre class="r"><code>all.equal(tmp1[&quot;p.Values.HAC.pw&quot;], tmp3[&quot;p.value&quot;], check.names=FALSE)</code></pre>
 <pre><code>## [1] &quot;Mean relative difference: 0.0005054292&quot;</code></pre>
-<p>The differences are on the 4th decimal place. ## Variances <code>diff.test(ret, est, rav=1, kernel=&quot;parzen&quot;, pw=0)</code> function. Now, the variances:</p>
+<p>The differences are on the 4th decimal place.</p>
+</div>
+</div>
+<div id="variances" class="section level2">
+<h2><span class="header-section-number">5.2</span> Variances</h2>
+<p><code>diff.test(ret, est, rav=1, kernel=&quot;parzen&quot;, pw=0)</code> function. Now, the variances:</p>
 <pre class="r"><code>tmp1 &lt;- unlist(hac.inference.log.var(ret$hedge)); tmp1</code></pre>
 <pre><code>##        Variances.Var1.hat        Variances.Var2.hat 
 ##                     1.466                     0.028 
@@ -496,9 +501,8 @@ str(ret)</code></pre>
 <pre class="r"><code>tmp3 &lt;- unlist(diff.test(ret$hedge, est=&quot;var&quot;, kernel=&quot;parzen&quot;, pw=1)); tmp3</code></pre>
 <pre><code>##          Diff            se          test       p.value 
 ##  3.954558e+00  6.998450e-01 -5.650620e+00  1.598705e-08</code></pre>
-</div>
 <div id="test-var-hac" class="section level3">
-<h3><span class="header-section-number">5.1.2</span> Test Var HAC</h3>
+<h3><span class="header-section-number">5.2.1</span> Test Var HAC</h3>
 <p>Difference in <code>Difference</code></p>
 <pre class="r"><code>all.equal(tmp1[&quot;Difference&quot;], tmp2[&quot;Diff&quot;], check.names=FALSE)</code></pre>
 <pre><code>## [1] &quot;Mean relative difference: 0.0001117906&quot;</code></pre>
@@ -520,21 +524,21 @@ str(ret)</code></pre>
 </div>
 </div>
 <div id="other-statistics" class="section level2">
-<h2><span class="header-section-number">5.2</span> Other Statistics</h2>
+<h2><span class="header-section-number">5.3</span> Other Statistics</h2>
 <div id="not-pw" class="section level3">
-<h3><span class="header-section-number">5.2.1</span> not PW</h3>
+<h3><span class="header-section-number">5.3.1</span> not PW</h3>
 <pre class="r"><code>diff.test(ret$hedge, est = &quot;mu&quot;)</code></pre>
 <pre><code>## $Diff
 ## [1] 0.9831481
 ## 
 ## $se
-## [1] 0.1474797
+## [1] 0.1462245
 ## 
 ## $test
-## [1] -6.666329
+## [1] -6.723552
 ## 
 ## $p.value
-## [1] 2.622807e-11</code></pre>
+## [1] 1.773473e-11</code></pre>
 <pre class="r"><code>diff.test(ret$hedge, est = &quot;ceq&quot;)</code></pre>
 <pre><code>## $Diff
 ## [1] 0.2642504
@@ -561,19 +565,19 @@ str(ret)</code></pre>
 ## [1] 0.05054842</code></pre>
 </div>
 <div id="pw" class="section level3">
-<h3><span class="header-section-number">5.2.2</span> PW</h3>
+<h3><span class="header-section-number">5.3.2</span> PW</h3>
 <pre class="r"><code>diff.test(ret$hedge, est = &quot;mu&quot;, pw=1)</code></pre>
 <pre><code>## $Diff
 ## [1] 0.9831481
 ## 
 ## $se
-## [1] 0.1872444
+## [1] 0.1856371
 ## 
 ## $test
-## [1] -5.250613
+## [1] -5.296074
 ## 
 ## $p.value
-## [1] 1.515936e-07</code></pre>
+## [1] 1.183189e-07</code></pre>
 <pre class="r"><code>diff.test(ret$hedge, est = &quot;ceq&quot;, pw=1)</code></pre>
 <pre><code>## $Diff
 ## [1] 0.2642504
@@ -600,7 +604,7 @@ str(ret)</code></pre>
 ## [1] 0.06743465</code></pre>
 </div>
 <div id="error-messages" class="section level3">
-<h3><span class="header-section-number">5.2.3</span> ERROR MESSAGES</h3>
+<h3><span class="header-section-number">5.3.3</span> ERROR MESSAGES</h3>
 <pre class="r"><code>diff.test(ret$hedge, est = &quot;foo&quot;, rav=3)</code></pre>
 <pre><code>## Error in diff.test(ret$hedge, est = &quot;foo&quot;, rav = 3): 
 ##  est must be either 'var', 'sr', 'mu', or 'ceq'</code></pre>
@@ -621,7 +625,7 @@ str(ret)</code></pre>
 t0 &lt;- Sys.time()
 tmp1 &lt;- boot.time.inference(ret$hedge, b=5, M=499)
 t1 &lt;- Sys.time(); t1-t0</code></pre>
-<pre><code>## Time difference of 1.626828 secs</code></pre>
+<pre><code>## Time difference of 1.583439 secs</code></pre>
 <pre class="r"><code>tmp1</code></pre>
 <pre><code>## $Difference
 ## [1] -0.4463
@@ -636,7 +640,7 @@ tmp2 &lt;- boot.test(ret$hedge, est=&quot;sr&quot;,  b=5, M=499)</code></pre>
 ##  ========================== 
 ##  ==========================</code></pre>
 <pre class="r"><code>t1 &lt;- Sys.time(); t1-t0</code></pre>
-<pre><code>## Time difference of 0.3288622 secs</code></pre>
+<pre><code>## Time difference of 0.3308492 secs</code></pre>
 <pre class="r"><code>tmp2</code></pre>
 <pre><code>## $Diff
 ## [1] -0.4463183
@@ -659,7 +663,7 @@ tmp2 &lt;- boot.test(ret$hedge, est=&quot;sr&quot;,  b=5, M=499)</code></pre>
 t0 &lt;- Sys.time()
 tmp1 &lt;- unlist(boot.time.inference.log.var(ret$hedge, b=5, M=499))
 t1 &lt;- Sys.time(); t1-t0</code></pre>
-<pre><code>## Time difference of 1.575658 secs</code></pre>
+<pre><code>## Time difference of 1.582443 secs</code></pre>
 <pre class="r"><code>tmp1</code></pre>
 <pre><code>## Difference    p.Value 
 ##      3.955      0.002</code></pre>
@@ -673,7 +677,7 @@ tmp2 &lt;- unlist(boot.test(ret$hedge, est=&quot;var&quot;, b=5, M=499)); tmp2</
 <pre><code>##     Diff  p.value 
 ## 3.954558 0.002000</code></pre>
 <pre class="r"><code>t1 &lt;- Sys.time(); t1-t0</code></pre>
-<pre><code>## Time difference of 0.2888494 secs</code></pre>
+<pre><code>## Time difference of 0.2868731 secs</code></pre>
 <div id="test-var-boot" class="section level3">
 <h3><span class="header-section-number">6.2.1</span> Test Var boot</h3>
 <pre class="r"><code>#     

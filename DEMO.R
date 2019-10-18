@@ -164,9 +164,10 @@ all.equal(tmp1["Standard.Errors.HAC.pw"], tmp3["se"], check.names=FALSE)
 all.equal(tmp1["p.Values.HAC"], tmp2["p.value"], check.names=FALSE)
 all.equal(tmp1["p.Values.HAC.pw"], tmp3["p.value"], check.names=FALSE)
 #' The differences are on the 4th decimal place.
-
+#'
 
 # /* ################################################# */
+
 #' ## Variances
 #' `diff.test(ret, est, rav=1, kernel="parzen", pw=0)` function.
 #' Now, the variances:
@@ -196,6 +197,7 @@ all.equal(tmp1["p.Values.HAC.pw"], tmp3["p.value"], check.names=FALSE)
 #' 
 
 # /* ################################################# */
+
 #' ## Other Statistics
 
 #' ### not PW
@@ -214,6 +216,7 @@ diff.test(ret$hedge, est = "foo", rav=3, pw=1)
 
 
 # /* ################################################# */
+
 #' # BOOTSTRAP TIME SERIES INFERENCE
 
 #' Now we turn to the Inference using Bootstrap.
