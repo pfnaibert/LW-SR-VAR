@@ -22,13 +22,14 @@ What is found here is merely an edit of those codes.
 If you find any bug, or technical error, please contact me.
 
 # PAPERS and GOALS of the code
-On @lw2008-sr and @lw2011-var, the authors provide methods to test the hypothesis of difference in the Sharpe Ratio and the Variance of two investment strategies.
+On @lw2008, @lw2011, and @lw2018 the authors provide methods to test the hypothesis of difference in the Sharpe Ratio and the Variance of two investment strategies.
 The papers can be found in the following links:
 
 [SR Paper](https://www.econ.uzh.ch/dam/jcr:ffffffff-935a-b0d6-0000-00007214c2bc/jef_2008pdf.pdf), 
 [SR WP](http://www.econ.uzh.ch/static/wp_iew/iewwp320.pdf), 
 [Variance Paper](https://www.econ.uzh.ch/dam/jcr:520edf26-2322-4708-8dde-51d61141914a/Ledoit_et_al-2011-Wilmott_Robust_Performance.pdf), 
-[Variance WP](http://www.econ.uzh.ch/static/wp_iew/iewwp516.pdf).
+[Variance WP](http://www.econ.uzh.ch/static/wp_iew/iewwp516.pdf),
+[Generalized WP](http://www.econ.uzh.ch/static/wp/econwp305.pdf).
 
 # Functions
 
@@ -47,10 +48,7 @@ Loading `rets.RDS` should result in a list object on the `R` Software [@R] .
 See DEMO files.
 
 # TODO
-- Document Functions (.tex?, .Rmd?, .org?)
-- Add technincal notes (vignettes)
-- Add Mean test (validate)
-- Add CEQ test [@dgu2009, @fko2012, @wec93] (validate)
+- Document Functions (R and html nb)
 
 # DISCLAIMER
 
