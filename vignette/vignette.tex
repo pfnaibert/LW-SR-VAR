@@ -57,7 +57,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % METADATA
-\title{Notes on Ledoit and Wolf (2008, 2011)}
+\title{Notes on Robust Hypothesis Testing}
 \author{Paulo F. Naibert}
 \date{\today}
 % \thanks{} \\ 
@@ -187,6 +187,9 @@ y_{t}' = \left(  r_{ti} - \mu_{i}, r_{tn} - \mu_{n}, r^2_{ti} - \gamma_{i}, r^2_
 	k\left( \frac{j}{S_{T}} \right) \hat{\Gamma}_{T}(j), && \text{where}
 \end{align*}
 
+$k(\cdot)$ kernel.
+$S_{T}$ bandwidth.
+
 % Gamma hat
 \begin{align*}
 	\hat{\Gamma}_{T}(j) &=
@@ -268,7 +271,7 @@ Then the $p$-value is computed as:
 \clearpage
 \section{Sharpe Ratio Example}
 
-Define the difference in Sharpe Ratios as function of the vector $u = (\mu_{i}, \mu_{n}, \sigma^2_{i}, \sigma^2_{n})'$:
+Define the difference in Sharpe Ratios as function of the vector of primitive statistics $u = (\mu_{i}, \mu_{n}, \sigma^2_{i}, \sigma^2_{n})'$:
 \begin{align}
 \Delta = f(u) &= SR_{i} - SR_{n} 
 = \frac{\mu_{i}}{\sqrt{\sigma^2_{i}}} - \frac{\mu_{n}}{\sqrt{\sigma^2_{n}}}.
@@ -302,14 +305,11 @@ They also use the bootstrap to find better $p$-values.
 
 They work with the uncentered second moments, so we define 
 \begin{align*}
-	\gamma_{i} = E(r_{it}^{2}), \; \gamma_{n} = E(r_{nt}^{2}),
-\end{align*}
-then, our vector of primitive statistics is
-\begin{align*}
-v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'.
+	\gamma_{i} = E(r_{it}^{2}), \; \gamma_{n} = E(r_{nt}^{2}).
 \end{align*}
 
-Defining $\Delta$ as a function of $v$:
+Now, define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$, the vector of primitive statistics:
+
 \begin{align}
 \Delta = f(v) &= SR_{i} - SR_{n} = 
 \frac{\mu_{i}}{\sqrt{\gamma_{i} - \mu^2_{i}}} - \frac{\mu_{n}}{\sqrt{\gamma_{n} - \mu^2_{n}}}.
@@ -333,44 +333,19 @@ The gradient of $f(v)$ is:
 \right).
 \end{align*}
 
-Now the standar error, $s(\hat{\Delta})$, is given by:
+And the standard error, $s(\hat{\Delta})$, is given by:
 \begin{align*}
 s(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
 \end{align*}
+where $\hat{\Psi}$ is a consistent estimator for $\Psi$.
 
-with a robust estimator for $\Psi$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % VARIANCE TESTING
-\clearpage \section{Variance Testing}
-\cite{lw2011-var}
+\clearpage 
 
-$T$ pairs: $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$.
+\section{Variance Testing}
 
-% pairs as matrix
-% $T \times 2$ matrix:
-% \begin{align*}
-% \begin{bmatrix}
-% r_{1i} &  r_{1n} \\ \vdots \\ r_{Ti} & r_{Tn}
-% \end{bmatrix}
-% \end{align*}
-
-Bivariate return distribution:
-\begin{align*}
-\mu=
-\begin{bmatrix}
-\mu_{i} \\ \mu_{n}
-\end{bmatrix}
-\quad
-\Sigma=
-\begin{bmatrix}
-\sigma_{i}^2 & \sigma_{ni}
-\\
-\sigma_{in} & \sigma_{n}^2
-\end{bmatrix}.
-\end{align*}
-
-% sample counterparts
-Any quantity $x$ when denoted as $\hat{x}$ simply means its sample counterpart, e.g. $\hat{\mu}$ denotes the sample counterpart of $\mu$.
+\textbf{The classical $F$-test:}
 
 % Classical Test
 Define the reason of variances as:
@@ -383,8 +358,6 @@ What we want to test is if the reason of variances is different from one statist
 	\text{ vs. }
 	H_{1}: \,\Theta \neq 1.
 \end{align*}
-
-\textbf{The classical $F$-test:}
 
 Defining the test statistic as $F=\hat{\sigma}^2_{i}/\hat{\sigma}^2_{n}$.
 $F_{\lambda, k_{1}, k_{2}}$ is the $\lambda$-quantile of $F_{k1, k2}$, or the $F$ distribution with $k_{1}$ and $k_{2}$ degrees of freedom.
@@ -417,15 +390,14 @@ In other terms:
 	H_{0}: \Delta=0 \text{ vs. } H_{1}: \Delta \neq 0.
 \end{align*}
 
-Define the Uncentered Second Moments as:
+Define the uncentered second moments as:
 \begin{align*}
 	\gamma_{i} = E(r_{it}^{2}), \; \gamma_{n} = E(r_{nt}^{2}),
 \end{align*}
-Then, we define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$:
+
+Then, we define $\Delta$ as a function of primitive statistics, $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$:
 \begin{align*}
-\Delta &= f(v),
-\\
-f(v) &=
+\Delta = f(v) &=
 \log{(\gamma_{i} - \mu^2_{i})} - \log{(\gamma_{n} - \mu^2_{n})} \\ &=
 \log\left( {\frac{\gamma_{i} - \mu^2_{i}}{\gamma_{n} - \mu^2_{n}}} \right).
 \end{align*}
@@ -448,26 +420,146 @@ The gradient of the function $f(v)$ is:
 \right).
 \end{align}
 
-Now, assume that:
+And the standard error of $\hat{\Delta}$, $s(\hat{\Delta})$, is given by:
 \begin{align}
-	T^{1/2}(v - \hat{v}) \to^d N(0, \Psi),
+	s(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
 \end{align}
-where $\Psi$ is an unknown symmetric PSD matrix.
+where $\hat{\Psi}$ is a consistent estimator for $\Psi$.
 
-If we apply a function on the vector $v$ of parameters, the Taylor expansion (Delta method) implies:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MEAN TESTING
+\clearpage
+\section{Mean Testing}
+
+\textbf{The classical $T$-test:}
+
+% Differences
+Define the difference of returns as $r_{td} = r_{ti} - r_{tn}$ with moments:
 \begin{align*}
-	T^{1/2}[f(v) - f(\hat{v})] \to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+E(r_{td}) &= \mu_{d} = \mu_{i} - \mu_{n} 
+	\\
+V(r_{dt})&= E[(r_{ti} - r_{tn})^2] - [E(r_{ti} - r_{tn})]^2
+\\
+V(r_{dt})&= E(r^2_{ti}) + E(r^2_{tn}) - 2E(r_{ti}r_{tn}) - \mu_{i}^2 + \mu_{n}^2 - 2\mu_{i}\mu_{n}
+\\
+V(r_{dt}) &= V(r_{ti}) + V(r_{tn}) - 2Cov(r_{ti},r_{tn}) 
+\\
+\sigma^2_{d} &= \sigma^2_{i} + \sigma^2_{n} - 2\sigma_{in}
 \end{align*}
 
-Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(v) = \Delta$, so we have:
+% Classical Test
+What we want to test is if the difference in means is different from zero statistically significant.
 \begin{align*}
-T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+	H_{0}: \, \hat{\mu}_{d} = 0
+	\text{ vs. }
+	H_{1}: \, \hat{\mu}_{d} \neq 0.
 \end{align*}
 
-Now, if a consistent estimator $\hat{\Psi}$ of $\Psi$ is available, then $se(\hat{\Delta})$ is given by:
+Define the test statistic as:
 \begin{align}
-	se(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
+\Theta &= T^{1/2} \frac{\hat{\mu}_{d}}{\hat{\sigma}_{d}} = 
+ T^{1/2} \frac{\hat{\mu}_{i} - \hat{\mu}_{n}}{\hat{\sigma}^2_{i} + \hat{\sigma}^2_{n} - 2\hat{\sigma}_{in}}.
 \end{align}
+Further, let's define $t_{\lambda}(k)$ as the $\lambda$-quantile of $t(k)$, or the $t$ distribution with $k$ degrees of freedom.
+The test rejects $H_{0}$ at a significance level $\alpha$ iff:
+\begin{align*}
+	|\Theta| > t_{1-\alpha/2}(T-1).
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REFORMULATION
+\section{Reformulation}
+Based on \cite{lw2008-sr, lw2011-var}.
+
+What we are going to test is whether the difference in mean, $\Delta$, is zero or not.
+In other terms:
+\begin{align*}
+	H_{0}: \Delta=0 \text{ vs. } H_{1}: \Delta \neq 0.
+\end{align*}
+
+Define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n})'$:
+\begin{align*}
+\Delta = f(v) = \mu_{i} - \mu_{n}.
+\end{align*}
+
+The gradient of the function $f(v)$ is:
+\begin{align}
+\nabla' f(v) =
+\left( 
+\pdf{f(v)}{\mu_{i}},
+\pdf{f(v)}{\mu_{n}}
+\right) = \left( 1, -1 \right).
+\end{align}
+
+And the standard error of $\hat{\Delta}$, $s(\hat{\Delta})$, is given by:
+
+\begin{align*}
+s(\hat{\Delta}) &= \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})} 
+\\
+\nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v}) &=
+\begin{bmatrix} 1 & -1 \end{bmatrix}
+\begin{bmatrix}
+\hat{\psi}_{11} &  \hat{\psi}_{12}
+\\            
+\hat{\psi}_{21} &  \hat{\psi}_{22}
+\end{bmatrix}
+\begin{bmatrix} 1 \\  -1 \end{bmatrix}
+\\
+&= \hat{\psi}_{11} + \hat{\psi}_{22} -2\hat{\psi}_{12}
+\end{align*}
+
+If we use $\hat{\Psi}$ as the sample covariance matrix:
+\begin{align*}
+\nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})= \hat{\sigma}_{1}^2 + \hat{\sigma}_{22}^{2} -2\hat{\sigma}_{12}.
+\end{align*}
+And we have the same case as the classical $t$-test.
+So we use HAC consistend methods to estimate $\hat{\Psi}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CEQ TESTING
+\clearpage
+\section{CEQ Testing}
+
+Based on \cite{lw2008-sr, lw2011-var}.
+
+Define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$:
+\begin{align*}
+\Delta = f(v) &= CEQ_{i} - CEQ_{n} 
+\\ &= \mu_{i} - \frac{\theta}{2}(\gamma_{i} - \mu^2_{i}) -
+\mu_{n} + \frac{\theta}{2}(\gamma_{n} - \mu^2_{n}).
+\end{align*}
+
+The gradient of the function $f(v)$ is:
+\begin{align*}
+\nabla' f(v) &=
+\left( 
+\pdf{f(v)}{\mu_{i}},
+\pdf{f(v)}{\mu_{n}}
+\pdf{f(v)}{\gamma_{i}},
+\pdf{f(v)}{\gamma_{n}}
+\right) \\
+&= \left( 1 + \theta \mu_{i}, -(1 + \theta \mu_{n}), -\frac{\theta}{2}, \frac{\theta}{2}  \right).
+\end{align*}
+
+And the standard error of $\hat{\Delta}$, $s(\hat{\Delta})$, is given by:
+\begin{align*}
+	s(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
+\end{align*}
+where $\hat{\Psi}$ is a consistent estimator for $\Psi$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Bibliografia
+\clearpage
+\bibliographystyle{authordate3} % bibliography style
+\renewcommand\bibname{REFERENCES} 
+\bibliography{../refs.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Bibliografia
