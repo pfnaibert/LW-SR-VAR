@@ -28,7 +28,7 @@
 \usepackage{xcolor}
 \usepackage{ragged2e}           % formatação texto
 \usepackage{bm}                 % bold symbols 
-\usepackage[colorlinks, citecolor=blue,urlcolor=blue]{hyperref} % referencias dentro do texo (*QUEBRA MEMOIR*)
+\usepackage[colorlinks, citecolor=blue, urlcolor=blue, linkcolor=red]{hyperref} % referencias dentro do texo (*QUEBRA MEMOIR*)
 \usepackage{url}                % URL
 \usepackage{graphicx}			% Inclusão de gráficos
 \usepackage{subcaption}			% Faz subfiguras
@@ -71,10 +71,10 @@
 \thispagestyle{headings}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TEXT
-\section{Generalized Testing}
-Based on \cite{lw2008-sr, lw2011-var}.
+\section{General Problem}
+Based on \cite{lw2008, lw2011, lw2018}.
 
-We observe $T$ pairs of returns, $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$, with a bivariate return distribution:
+We observe $T$ pairs of returns, $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$, with a bivariate return distribution over time:
 % pairs as matrix
 % $T \times 2$ matrix:
 % 
@@ -99,96 +99,196 @@ We observe $T$ pairs of returns, $(r_{1i}, r_{1n})', \dots, (r_{Ti}, r_{Tn})'$, 
 \end{bmatrix}.
 \end{align*}
 
-% sample counterparts
-\textbf{NOTE:} Any quantity $x$ when denoted as $\hat{x}$ simply means its sample counterpart, e.g. $\hat{\mu}$ denotes the sample counterpart of $\mu$.
+% assumptions
+We do \textit{not} assume the distribution to be normal, nor do we assume that returns are independent over time.
 
 % Statistic
-Define a primitive statistic $\tau$ as a function of data, define a ``derived'' statistic $\delta$ as a function of the primitive statistics, and finally, define $\Delta$ as the difference of derived statistics, then we have:
-\begin{align*}
-	\Delta = \delta_{i} - \delta_{n} = \delta(\tau(r_{ti})) - \delta(\tau(r_{tn}))
+The parameter of interest is:
+\begin{align} \label{eq:delta}
+	\Delta = \theta_{i} - \theta_{n},
+\end{align}
+where $\theta$ is a given performance measure.
+Hence, $\theta_{i}$ is the performance measure for the strategy $i$, and $\theta_{n}$ is the performance measure for the strategy $n$.
+
+We are interested in testing:
+\begin{align*} \label{eq:hyp}
+	H_{0}: \Delta = 0 \quad \text{vs} \quad	H_{1}: \Delta \neq 0  
 \end{align*}
 
-We can also define $\Delta$ as a function of the $K \times 1$ vector of primitive statistics $v$:
+We consider the class of performance measure \textit{$\theta$ that can be expressed as a smooth function of a finite number of population moments}.
+In particular, for $j=i,n$ let
 
 \begin{align*}
-	\Delta = f(v)
+	v_{j}^{(k)} := E(r_{j}^k)
 \end{align*}
 
-Then we can define the $\nabla f(v)$ as the gradient of $f(v)$:
+\noindent
+denote the (uncentered) $k$th population moment of the returns of strategy $j$.
+Then, for $j=i,n$ we assume that $\theta_{j}$ can be expressed as
 
-% gradient of f(v)
 \begin{align*}
-\nabla' f(v) &=
-\left( 
-\pdf{f(u)}{v_{1}},
-\dots
-\pdf{f(u)}{v_{n}},
-\right)
+	\theta_{j} = h( v_{j}^{(1)}, \dots, v_{j}^{(K)}), 
 \end{align*}
 
-% 
-Assume that:
+\noindent
+where $K \geq1$ is an integer and $h: \R^{K} \to \R$ is a smooth function (in the sense of being one time continuously differentiable).
+
+For $j=i,n$, let $v_{j}'= (v_{j}^{(1)}, \dots, v_{j}^{(K)})$.
+Furthermore, let $v'= (v_{i}', v_{n}')$.
+Then the parameter of interest $\Delta$ in \eqref{eq:delta} can be written as a function of the population moments:
+
 \begin{align*}
-	T^{1/2}(v - \hat{v}) \to^d N(0, \Psi),
+	\Delta := f(v) = f(v_{i} , v_{n}) = h(v_{i}) - h(v_{n}) = \theta_{i} - \theta_{n}, 
 \end{align*}
-where $\Psi$ is an unknown symmetric PSD matrix.
+
+so that $f: \R^{2K} \to \R$ is also a smooth function, defined as:
+
+\begin{align}\label{eq:delta:fn}
+	f(v_{i}^{(1)}, \dots, v_{i}^{(K)}, v_{n}^{(1)}, \dots, v_{n}^{(K)})  =
+	h(v_{i}^{(1)}, \dots, v_{i}^{(K)})  -
+	h(v_{n}^{(1)}, \dots, v_{n}^{(K)}) =
+	\theta_{i} - \theta_{n}.
+\end{align}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Sample Estimates}
+
+For $j=i,n$, denote the (uncentered) $k$th sample moment of the observed returns by:
+\begin{align*}
+	\hat{v}_{j}^{(k)} := T^{-1} \sum_{t=1}^T r_{tj}^{k}.
+\end{align*}
+
+Then the estimator of the parameter of interest, $\Delta$, is given by:
+\begin{align}
+	\hat{\Delta} := \hat{\theta}_{i} - \hat{\theta}_{n}
+\end{align}
+where
+\begin{align}
+	\hat{\theta}_{j} := h(\hat{v}_{j}^{(1)}, \dots, \hat{v}_{j}^{(K)} ).
+\end{align}
+
+For $j=i,n$, let $\hat{v}_{j}' := (\hat{v}_{j}^{(1)}, \dots, \hat{v}_{j}^{(K)} )$.
+Furthermore, let $\hat{v}' :=( \hat{v}_{i}', \hat{v}_{n}' )$.
+Then the estimator of $\Delta$ can also be expressed as:
+\begin{align*}
+	\hat{\Delta} := f(\hat{v})
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Solutions}
+We assume that:
+\begin{align}\label{eq:vhat:dist}
+	T^{1/2}(\hat{v} - v) \to^d N(0, \Psi),
+\end{align}
+where $\Psi$ is an unknown symmetric PD matrix of dimension $2K \times 2K$.
+This relation holds under mild regularity conditions.
+For various sets of sufficient conditions in the TS case, see \blue{White (2001)}, for example.
 
 If we apply a function on the vector $v$ of parameters, the Taylor expansion (Delta method) implies:
 \begin{align*}
-T^{1/2}[f(v) - f(\hat{v})] \to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+T^{1/2}[f(\hat{v}) - f(v)] \to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
 \end{align*}
 
 Well, we will use $f(\cdot)$ as defined earlier, and we denote $f(v) = \Delta$, so we have:
+\begin{align}\label{eq:dhat:dist}
+	T^{1/2}(\hat{\Delta} - \Delta) 	\to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\end{align}
+where the $2K \times 1$ vector-valued function $\nabla f(\cdot)$ is the gradient of $f(\cdot)$. 
+
+Therefore, if a consistent estimator $\hat{\Psi}$ of $\Psi$ is available, then an asymptotic standard error of for $\hat{\Delta}$, $s(\hat{\Delta})$, is given by:
+% se(delta.hat)
+\begin{align}\label{eq:sedelta}
+s(\hat{\Delta}) := \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
+\end{align}
+
+Given  the formula \eqref{eq:delta:fn} for $f(\cdot)$, it hold that:
+
+Then we can define the $\nabla f(v)$ as the gradient of $f(v)$:
+% gradient of f(v)
 \begin{align*}
-T^{1/2}(\Delta - \hat{\Delta}) 	\to^d N \left( 0; \nabla'f(v) \Psi \nabla f(v)  \right).
+\nabla' f(v) &=
+\left( 	\nabla'h(v_{i}),  - \nabla'h(v_{n}) \right) \\ &=
+\left( 
+\pdf{f(v_{i})}{v_{i}^{(1)}},
+\dots,
+\pdf{f(v_{i})}{v_{i}^{(K)}},
+-\pdf{f(v_{n})}{v_{n}^{(1)}},
+\dots,
+-\pdf{f(v_{n})}{v_{n}^{(K)}}
+\right).
 \end{align*}
 
-Now, if a consistent estimator $\hat{\Psi}$ of $\Psi$ is available, then the standard error of the estimate $\hat{\Delta}$, $s(\hat{\Delta})$, is given by:
-% se(delta.hat)
-\begin{align}
-s(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{v}) \hat{\Psi} \nabla f(\hat{v})}.
-\end{align}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textit{Note 1:} In the codes we use:
+\begin{align*}
+\nabla' f(v) &=
+\left( 
+\pdf{f(v_{i})}{v_{i}^{(1)}},
+-\pdf{f(v_{n})}{v_{n}^{(1)}},
+\dots ,
+\pdf{f(v_{i})}{v_{i}^{(K)}},
+-\pdf{f(v_{n})}{v_{n}^{(K)}}
+\right).
+\blacksquare
+\end{align*}  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Estimating $\hat{\Psi}$}
 
 Let's estimate $\hat{\Psi}$:
-
 \begin{align*}
-\Psi &= \lim_{T \to \infty} T^{-1} \sum_{s=1}^{T}\sum_{t=1}^{T} E[y_{s}y'_{t}],
-\quad \text{with } \quad
-y_{t}' = \left(  r_{ti} - \mu_{i}, r_{tn} - \mu_{n}, r^2_{ti} - \gamma_{i}, r^2_{tn} - \gamma_{n} \right)
+\Psi = \lim_{T \to \infty} T^{-1} \sum_{s=1}^{T}\sum_{t=1}^{T} E[y_{s}y'_{t}],
 \end{align*}
+where
+\begin{align*}
+y_{t}' = 
+\left(
+r_{ti} - v_{i}^{(1)}, \dots , r_{ti}^K - v_{i}^{(K)},
+r_{tn} - v_{n}^{(1)}, \dots , r_{tn}^K - v_{n}^{(K)} 
+\right)
+\end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textit{Note 2:} In the codes we use:
+\begin{align*}
+y_{t}' = 
+\left(
+r_{ti} - v_{i}^{(1)}, r_{tn} - v_{n}^{(1)}, \dots,
+r_{ti}^K - v_{i}^{(K)}, r_{tn}^K - v_{n}^{(K)} 
+\right).
+\blacksquare
+\end{align*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % psi fun
 \begin{align*}
-	\Psi &= \lim_{T \to \infty} \Psi_{t},
+	\Psi &= \lim_{T \to \infty} \Psi_{T},
 	\quad \text{ with } \quad
-	\Psi = \sum_{j=-T+1}^{T-1} \Gamma_{T}(j),
+	\Psi_{T} = \sum_{j=-T+1}^{T-1} \Gamma_{T}(j),
 	\qquad \text{where}
 \end{align*}
 
 % gamma fun
 \begin{align*}
-	\Gamma_{T}(j) &=
+\Gamma_{T}(j) &=
 \begin{cases}
-	T^{-1} \sum_{t=j+1}^{T}	E[y_{t}y'_{t-j}] & \text{for } j \geq 0
-	\\
-	T^{-1} \sum_{t=-j+1}^{T} E[y_{t+j}y'_{t}]& \text{for } j<0
+T^{-1} \sum_{t=j+1}^{T}	E[y_{t}y'_{t-j}] & \text{for } j \geq 0
+\\
+T^{-1} \sum_{t=-j+1}^{T} E[y_{t+j}y'_{t}]& \text{for } j<0
 \end{cases}
 \end{align*}
 \red{Are those $E(\cdot)$ necessary, since we are already taking means?}
 
+$k(\cdot)$ kernel function.
+$S_{T}$ bandwidth.
+
 % Psi hat
 \begin{align*}
-	\hat{\Psi} = \hat{\Psi}_{T} =
-	\frac{T}{T-K}
+	\hat{\Psi} := \hat{\Psi}_{T} =
+	\frac{T}{T-2K}
 	\sum_{j=-T+1}^{T-1}
 	k\left( \frac{j}{S_{T}} \right) \hat{\Gamma}_{T}(j), && \text{where}
 \end{align*}
-
-$k(\cdot)$ kernel.
-$S_{T}$ bandwidth.
 
 % Gamma hat
 \begin{align*}
@@ -199,14 +299,20 @@ $S_{T}$ bandwidth.
 	T^{-1} \sum_{t=-j+1}^{T} \hat{y}_{t+j} \hat{y}'_{t}& \text{for } j<0
 \end{cases}
 \end{align*}
+where
+\begin{align*}
+	\hat{y}_{t}' = 
+\left(
+	r_{ti} - \hat{v}_{i}^{(1)}, \dots , r_{ti}^K - \hat{v}_{i}^{(K)},
+	r_{tn} - \hat{v}_{n}^{(1)}, \dots , r_{tn}^K - \hat{v}_{n}^{(K)} 
+\right)
+\end{align*}
 
-\begin{quote}
-{\footnotesize
-The factor $T/(T-K)$ is a small sample degrees of freedom adjustment that is introduced to offset the effect of the estimation of the $K \times 1$ vector $v$ in the computation $\hat{\Gamma}_{T}(j)$, that is, the use of $\hat{y}_{t}$ rather than $y_{t}$.}
-\end{quote}
+The factor $T/(T-2K)$ is a small sample degrees of freedom adjustment that is introduced to offset the effect of the estimation of the $K \times 1$ vector $v$ in the computation $\hat{\Gamma}_{T}(j)$, that is, the use of $\hat{y}_{t}$ rather than $y_{t}$.
 
-A two-sided $p$-value for the Null hypothesis $H_{0}: \Delta=0$ is givenby:
+[\dots]
 
+A two-sided $p$-value for the Null hypothesis $H_{0}: \Delta=0$ is given by:
 \begin{align*}
 	\hat{p} = 2 \Phi\left( \frac{|\hat{\Delta}|}{s(\hat{\Delta})} \right)
 \end{align*}
@@ -215,7 +321,22 @@ where $\Psi$ denotes the cdf of the standard normal distribution.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Bootstrap Inference}
 
-Circular Boostrap of \blue{Politis and Romano (1992)}, resampling now \textit{blocks of pairs} from the observed pairs $(r_{ti}, r_{tn})'$, $t=1, \dots, T$ \textit{with replacement}.
+The two-sided distribution function of the studentized statistic is approximated via the bootstrap as follows:
+\begin{align}
+L\left(
+\frac{| \hat{\Delta} - \Delta |}{s(\hat{\Delta})}
+\right) 
+\approx
+L\left(
+\frac{| \hat{\Delta}^{*} - \hat{\Delta} |}{s(\hat{\Delta}^{*})}
+\right) 
+\end{align}
+where $\Delta$ is the true difference in the performance measure, 
+$\hat{\Delta}$ is the estimated difference from the original data,
+$\hat{\Delta}^{*}$ is the estimated difference from the bootstrap data.
+$L(X)$ is the distribution function of random variable $X$.
+
+We use the Circular Boostrap of \cite{pr92}, resampling now \textit{blocks of pairs} from the observed pairs $(r_{ti}, r_{tn})'$, $t=1, \dots, T$ \textit{with replacement}.
 These block have a \textit{fixed} size $b\geq1$.
 Standard error is computed as:
 % standard error sd, se
@@ -236,21 +357,18 @@ More specifically, letting $l=\floor{T/b}$, define:
 	\zeta_{j}=b^{-1/2}\sum_{t=1}^{b} y_{t+(j-1)b}^{*},
 	\quad t=1,\dots,l
 \end{align}
-
 and
-
 \begin{align}
 	\hat{\Psi}^{*}=l^{-1}\sum_{j=1}^{l} \zeta_{j} \zeta_{j}'.
 \end{align}
 With this more genral definition, of $\hat{\Psi}^{*}$, the bootstrap error is given by:
-
 \begin{align*}
 	se(\hat{\Delta}^{*}) =
 	\sqrt{T^{-1} \nabla'f(\hat{v}^{*}) \hat{\Psi}^{*} \nabla f(\hat{v}^{*})}.
 \end{align*}
 
 \subsubsection{Direct Computation of the $p$-value}
-\blue{Remark 3.2 on the original paper}
+\textit{Remark 3.2} of \cite{lw2008} or \textit{Remark 3.1} of \cite{lw2018}.
 
 Denote the original studentized test statistic by:
 \begin{align}
@@ -263,13 +381,15 @@ and denote the \textit{centered} studentized test statistic computed from the $m
 where $M$ is the number of bootstrap resamples.
 Then the $p$-value is computed as:
 \begin{align}
-	PV =\frac{\#\{ \tilde{d}^{*, m} \geq d\} + 1}{M+1}.
+	\hat{p}^{*} =\frac{\#\{ \tilde{d}^{*, m} \geq d\} + 1}{M+1}. 
+	\quad \blacksquare
 \end{align}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Classical testing
 \clearpage
 \section{Sharpe Ratio Example}
+\cite{lw2008}
 
 Define the difference in Sharpe Ratios as function of the vector of primitive statistics $u = (\mu_{i}, \mu_{n}, \sigma^2_{i}, \sigma^2_{n})'$:
 \begin{align}
@@ -283,7 +403,7 @@ Now, we need an estimator $\hat{\Psi}$ for $\Psi$, to find the standar error:
 s(\hat{\Delta}) = \sqrt{T^{-1} \nabla'f(\hat{u}) \hat{\Psi} \nabla f(\hat{u})}.
 \end{align}
 
-The problem in \cite{jb81-sr} is that they uses a formula for $\hat{\Psi}$ that crucially relies on $iid$ return data for a bivariate normal distribution:
+The problem in \cite{jk81} is that they uses a formula for $\hat{\Psi}$ that crucially relies on $iid$ return data for a bivariate normal distribution:
 \begin{align*}
 \Psi = 
 \begin{bmatrix}
@@ -294,22 +414,17 @@ The problem in \cite{jb81-sr} is that they uses a formula for $\hat{\Psi}$ that 
 \end{bmatrix}
 \end{align*}
 
-Further information can be found in: \cite{lo02-sr, jb81-sr}.
+Further information can be found in: \cite{lo02, jk81}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Ledoit SR
 \subsection{Ledoit and Wolf (2008)}
 
-They correct \cite{jb81-sr} using robust estimates for $\Psi$.
+They correct \cite{jk81} using robust estimates for $\Psi$.
 They also use the bootstrap to find better $p$-values.
 
-They work with the uncentered second moments, so we define 
-\begin{align*}
-	\gamma_{i} = E(r_{it}^{2}), \; \gamma_{n} = E(r_{nt}^{2}).
-\end{align*}
-
-Now, define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$, the vector of primitive statistics:
-
+Define $\gamma_{i}$ as the uncentered second moment of $r_{ti}$.
+We can define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$, the vector of the two first moments.
 \begin{align}
 \Delta = f(v) &= SR_{i} - SR_{n} = 
 \frac{\mu_{i}}{\sqrt{\gamma_{i} - \mu^2_{i}}} - \frac{\mu_{n}}{\sqrt{\gamma_{n} - \mu^2_{n}}}.
@@ -342,13 +457,11 @@ where $\hat{\Psi}$ is a consistent estimator for $\Psi$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % VARIANCE TESTING
 \clearpage 
-
 \section{Variance Testing}
+\cite{lw2011}
 
-\textbf{The classical $F$-test:}
-
-% Classical Test
-Define the reason of variances as:
+\textbf{The classical $F$-test}, tests the reason of variances.
+So, we define the reason of variances as:
 \begin{align}
 	\Theta=\sigma^2_{i}/\sigma^2_{n}.
 \end{align}
@@ -372,7 +485,7 @@ The $F$-test rejects $H_{0}$ at a significance level $\alpha$ iff:
 % LW var
 \subsection{Ledoit and Wolf (2011)}
 
-First, we reformulate the problem with a log transformation: 
+They reformulate the problem with a log transformation: 
 \begin{align}
 \Delta = \log(\Theta) =
 \log(\sigma_{i}^{2}) - \log(\sigma_{n}^{2})  =
@@ -384,18 +497,7 @@ First, we reformulate the problem with a log transformation:
 \textbf{OBS:} Log transformation, see Efron and Tibshirani 1993, sec 12.6.}
 \vspace{1 em}
 
-What we are going to test is whether the difference in log variances, $\Delta$, is zero or not.
-In other terms:
-\begin{align*}
-	H_{0}: \Delta=0 \text{ vs. } H_{1}: \Delta \neq 0.
-\end{align*}
-
-Define the uncentered second moments as:
-\begin{align*}
-	\gamma_{i} = E(r_{it}^{2}), \; \gamma_{n} = E(r_{nt}^{2}),
-\end{align*}
-
-Then, we define $\Delta$ as a function of primitive statistics, $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$:
+Defining $\Delta$ as a function of the first two uncentered moments, $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$:
 \begin{align*}
 \Delta = f(v) &=
 \log{(\gamma_{i} - \mu^2_{i})} - \log{(\gamma_{n} - \mu^2_{n})} \\ &=
@@ -434,10 +536,9 @@ where $\hat{\Psi}$ is a consistent estimator for $\Psi$.
 \clearpage
 \section{Mean Testing}
 
-\textbf{The classical $T$-test:}
-
-% Differences
-Define the difference of returns as $r_{td} = r_{ti} - r_{tn}$ with moments:
+\textbf{The classical $T$-test} 
+verifies if the difference in means is statistically significant different from zero.
+So, we define the difference of returns as $r_{td} = r_{ti} - r_{tn}$ with moments:
 \begin{align*}
 E(r_{td}) &= \mu_{d} = \mu_{i} - \mu_{n} 
 	\\
@@ -450,35 +551,21 @@ V(r_{dt}) &= V(r_{ti}) + V(r_{tn}) - 2Cov(r_{ti},r_{tn})
 \sigma^2_{d} &= \sigma^2_{i} + \sigma^2_{n} - 2\sigma_{in}
 \end{align*}
 
-% Classical Test
-What we want to test is if the difference in means is different from zero statistically significant.
-\begin{align*}
-	H_{0}: \, \hat{\mu}_{d} = 0
-	\text{ vs. }
-	H_{1}: \, \hat{\mu}_{d} \neq 0.
-\end{align*}
-
 Define the test statistic as:
 \begin{align}
-\Theta &= T^{1/2} \frac{\hat{\mu}_{d}}{\hat{\sigma}_{d}} = 
+\hat{\Delta} &= T^{1/2} \frac{\hat{\mu}_{d}}{\hat{\sigma}_{d}} = 
  T^{1/2} \frac{\hat{\mu}_{i} - \hat{\mu}_{n}}{\hat{\sigma}^2_{i} + \hat{\sigma}^2_{n} - 2\hat{\sigma}_{in}}.
 \end{align}
 Further, let's define $t_{\lambda}(k)$ as the $\lambda$-quantile of $t(k)$, or the $t$ distribution with $k$ degrees of freedom.
 The test rejects $H_{0}$ at a significance level $\alpha$ iff:
 \begin{align*}
-	|\Theta| > t_{1-\alpha/2}(T-1).
+	|\hat{\Delta}| > t_{1-\alpha/2}(T-1).
 \end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % REFORMULATION
-\section{Reformulation}
-Based on \cite{lw2008-sr, lw2011-var}.
-
-What we are going to test is whether the difference in mean, $\Delta$, is zero or not.
-In other terms:
-\begin{align*}
-	H_{0}: \Delta=0 \text{ vs. } H_{1}: \Delta \neq 0.
-\end{align*}
+\subsection{Reformulation}
+Based on \cite{lw2018}.
 
 Define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n})'$:
 \begin{align*}
@@ -523,7 +610,7 @@ So we use HAC consistend methods to estimate $\hat{\Psi}$.
 \clearpage
 \section{CEQ Testing}
 
-Based on \cite{lw2008-sr, lw2011-var}.
+Based on \cite{lw2008, lw2011}.
 
 Define $\Delta$ as a function of $v = (\mu_{i}, \mu_{n}, \gamma_{i}, \gamma_{n})'$:
 \begin{align*}
