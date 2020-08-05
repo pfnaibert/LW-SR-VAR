@@ -34,10 +34,12 @@ The papers can be found in the following links:
 [Variance WP](http://www.econ.uzh.ch/static/wp_iew/iewwp516.pdf),
 [Generalized WP](http://www.econ.uzh.ch/static/wp/econwp305.pdf).
 
+Also, I made a summary of those papers [here](vignette.pdf)
+
 ## Functions
 
-I copied the original functions on `Sharpe.RData` and `Var.RData` into the files: `"SR-ORIGINAL.R"` and `"Var-ORIGINAL.R"` with some minor modifications.
-Then I copied the functions to the file `"LW-SR-Var.R"` and modified them more.
+The functions can be found [here](./R/LW-SR-VAR.R).
+They are edits of the [`Sharpe.RData`](./R/Sharpe.RData) and [`Var.RData`](./R/Var.RData) files that can be found in Michael Wolf's website with some additions and modifications.
 
 I didn't have enought time to modify the `block.size.calibrate()` functions.
 
@@ -48,7 +50,7 @@ Loading `rets.RDS` should result in a list object on the `R` Software [@R] .
 
 ## USAGE
 
-See DEMO files.
+See [DEMO](./DEMO/) files.
 
 # TODO
 - Document Functions (R and html nb)

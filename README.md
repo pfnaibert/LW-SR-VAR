@@ -28,10 +28,12 @@ On Oliver Ledoit and Wolf (2008), Oliver Ledoit and Wolf (2011), and Olivier Led
 
 [SR Paper](https://www.econ.uzh.ch/dam/jcr:ffffffff-935a-b0d6-0000-00007214c2bc/jef_2008pdf.pdf), [SR WP](http://www.econ.uzh.ch/static/wp_iew/iewwp320.pdf), [Variance Paper](https://www.econ.uzh.ch/dam/jcr:520edf26-2322-4708-8dde-51d61141914a/Ledoit_et_al-2011-Wilmott_Robust_Performance.pdf), [Variance WP](http://www.econ.uzh.ch/static/wp_iew/iewwp516.pdf), [Generalized WP](http://www.econ.uzh.ch/static/wp/econwp305.pdf).
 
+Also, I made a summary of those papers [here](vignette.pdf)
+
 Functions
 ---------
 
-I copied the original functions on `Sharpe.RData` and `Var.RData` into the files: `"SR-ORIGINAL.R"` and `"Var-ORIGINAL.R"` with some minor modifications. Then I copied the functions to the file `"LW-SR-Var.R"` and modified them more.
+The functions can be found [here](./R/LW-SR-VAR.R). They are edits of the [`Sharpe.RData`](./R/Sharpe.RData) and [`Var.RData`](./R/Var.RData) files that can be found in Michael Wolf's website with some additions and modifications.
 
 I didn't have enought time to modify the `block.size.calibrate()` functions.
 
@@ -43,7 +45,7 @@ For the data, I simpy saved the returns data of `Sharpe.RData` as a `.RDS` file.
 USAGE
 -----
 
-See DEMO files.
+See [DEMO](./DEMO/) files.
 
 TODO
 ====
