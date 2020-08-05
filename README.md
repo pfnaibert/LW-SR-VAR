@@ -2,10 +2,6 @@ Replication of Ledoit and Wolf (2008, 2011, 2018) Functions
 ================
 Paulo Ferreira Naibert
 
-
-
-
-
 Original: 2019 October 13.
 
 Current: 05, agosto, 2020

@@ -3,9 +3,9 @@ title: Replication of Ledoit and Wolf (2008, 2011, 2018) Functions
 output: github_document
 author: "Paulo Ferreira Naibert" 
 bibliography: refs.bib
-header-includes:
-  - \usepackage{natbib}  
-  - \bibliographystule{aauthordate3}  
+citation_package: natbib
+includes:
+in_header: preamble.tex
 --- 
 
 Original: 2019 October 13.
