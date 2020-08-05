@@ -167,7 +167,7 @@ return(out)
 
 #####################################
 #' Robust Hipothesis test using bootstrap
-#' see @lw2008-sr and @lw2011-var 
+#' see @lw2008 and @lw2011 
 boot.test <- function(ret, est, rav=1, b=5, M=499, D.null=0) 
 {
 if(NCOL(ret)!=2){stop("\n Number of series differ from 2 \n")}
@@ -284,7 +284,7 @@ return(out)
 
 #####################################
 #' utility function to calculate the V.hat AND the gradient
-#' see @lw2008-sr and @lw2011-var p.XX
+#' see @lw2008 and @lw2011 
 #' current supported statistics:
 #' mean, var, sr, ceq.
 util.fn <- function(ret, est, rav=1)
