@@ -45,7 +45,7 @@ For the data, I simpy saved the returns data of `Sharpe.RData` as a `.RDS` file.
 USAGE
 -----
 
-See [DEMO](./DEMO/) files.
+See [DEMO](./DEMOS/) files.
 
 TODO
 ====

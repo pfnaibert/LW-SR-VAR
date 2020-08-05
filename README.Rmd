@@ -50,7 +50,7 @@ Loading `rets.RDS` should result in a list object on the `R` Software [@R] .
 
 ## USAGE
 
-See [DEMO](./DEMO/) files.
+See [DEMO](./DEMOS/) files.
 
 # TODO
 - Document Functions (R and html nb)
