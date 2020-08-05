@@ -1,16 +1,19 @@
 --- 
-title: Replication of Ledoit and Wolf (2008, 2011) Functions
+title: Replication of Ledoit and Wolf (2008, 2011, 2018) Functions
 output: github_document
 author: "Paulo Ferreira Naibert" 
 bibliography: refs.bib
+header-includes:
+  - \usepackage{natbib}  
+  - \bibliographystule{aauthordate3}  
 --- 
 
 Original: 2019 October 13.
 
 Current: `r format(Sys.time(), "%d, %B, %Y")`
 
-# Overview
-This Repository contains functions to replicate @lw2008 and @lw2011 @lw2018.
+## Overview
+This Repository contains functions to replicate @lw2008, @lw2011, and @lw2018.
 
 Michael Wolf provides `R` codes for those two papers on 
 [his webpage](https://www.econ.uzh.ch/en/people/faculty/wolf.html), 
@@ -21,8 +24,8 @@ What is found here is merely an edit of those codes.
 
 If you find any bug, or technical error, please contact me.
 
-# PAPERS and GOALS of the code
-On @lw2008, @lw2011, and @lw2018 the authors provide methods to test the hypothesis of difference in the Sharpe Ratio and the Variance of two investment strategies.
+## PAPERS and GOALS of the code
+On @lw2008, @lw2011, and @lw2018, the authors provide methods to test the hypothesis of difference in the Sharpe Ratio and the Variance of two investment strategies.
 The papers can be found in the following links:
 
 [SR Paper](https://www.econ.uzh.ch/dam/jcr:ffffffff-935a-b0d6-0000-00007214c2bc/jef_2008pdf.pdf), 
@@ -31,19 +34,19 @@ The papers can be found in the following links:
 [Variance WP](http://www.econ.uzh.ch/static/wp_iew/iewwp516.pdf),
 [Generalized WP](http://www.econ.uzh.ch/static/wp/econwp305.pdf).
 
-# Functions
+## Functions
 
 I copied the original functions on `Sharpe.RData` and `Var.RData` into the files: `"SR-ORIGINAL.R"` and `"Var-ORIGINAL.R"` with some minor modifications.
 Then I copied the functions to the file `"LW-SR-Var.R"` and modified them more.
 
 I didn't have enought time to modify the `block.size.calibrate()` functions.
 
-# Data
+## Data
 
 For the data, I simpy saved the returns data of `Sharpe.RData` as a `.RDS` file.
 Loading `rets.RDS` should result in a list object on the `R` Software [@R] .
 
-# USAGE
+## USAGE
 
 See DEMO files.
 
